@@ -8,5 +8,6 @@ enum AppConfig {
     #endif
 
     static let paraEnvironment = "beta"
+    static let paraAPIKey = "" // Set via KeychainService or replace with your Para API key
     static let paraAppScheme = "aomi"
 }
