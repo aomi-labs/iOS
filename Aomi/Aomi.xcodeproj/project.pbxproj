@@ -1,0 +1,558 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2C2F40CD6F55B9386B15B912 /* AomiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B07100BC8C4B603F199C97E /* AomiTests.swift */; };
+		3E1744AC6F9A743205AA8204 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4DCFF657482DD3FE507CC4 /* AppConfig.swift */; };
+		44274DD2938265D67CEC57FB /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = B18EF27C0031907FFA251AB6 /* MarkdownUI */; };
+		505DD62606464921D60EAF28 /* WalletEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C02E15750A42C5D5EA22EC5 /* WalletEntry.swift */; };
+		96BCC4541314930A78AFE589 /* PersistedChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819A120CE663D3A0768B77B1 /* PersistedChatSession.swift */; };
+		DFA0B102788697CB6CF40939 /* AomiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A9BD0CD688BDAE30FC2502 /* AomiApp.swift */; };
+		FF695D211F5751954E3ABA93 /* ParaSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 65AD6AC37F9834BA3FEEFA8B /* ParaSwift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A2BD061CF8A76DFDD594CF5A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E8C3B0D189870EEBA3D9EBE4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 97D8F11F443FA1A02583907C;
+			remoteInfo = Aomi;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		27448EFCEA2C2C13F227215E /* AomiTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AomiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B07100BC8C4B603F199C97E /* AomiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AomiTests.swift; sourceTree = "<group>"; };
+		3C02E15750A42C5D5EA22EC5 /* WalletEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletEntry.swift; sourceTree = "<group>"; };
+		6D4DCFF657482DD3FE507CC4 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		7A10CC510B01A04C02B979E8 /* Aomi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Aomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		819A120CE663D3A0768B77B1 /* PersistedChatSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistedChatSession.swift; sourceTree = "<group>"; };
+		D8A9BD0CD688BDAE30FC2502 /* AomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AomiApp.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B1EBF662B44A4FE9A86CEBC4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF695D211F5751954E3ABA93 /* ParaSwift in Frameworks */,
+				44274DD2938265D67CEC57FB /* MarkdownUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		123B5B04825A8BE7496D3F70 /* Wallet */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Wallet;
+			sourceTree = "<group>";
+		};
+		1E046E9DB03F602F073EC49F = {
+			isa = PBXGroup;
+			children = (
+				28E5FA10E5A8BD43A15B59BE /* Aomi */,
+				CC54E2433FBB0478F46DA9C6 /* AomiTests */,
+				5353CACC99718650CEFC193E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		20A7DDFB472877F0389AEE11 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		28E5FA10E5A8BD43A15B59BE /* Aomi */ = {
+			isa = PBXGroup;
+			children = (
+				A76E5F0C27B53503143E40D5 /* App */,
+				F33D4E6EDC0DF40EA623EF6F /* Models */,
+				70D02C38A6A6C515E3A3EDA8 /* Services */,
+				E4D29B58884567E35D478A98 /* Utilities */,
+				496E550A2D0EB53C6286B1F5 /* ViewModels */,
+				66CFEAF9A1312757DB11D492 /* Views */,
+			);
+			path = Aomi;
+			sourceTree = "<group>";
+		};
+		43E9B94316445A6528724056 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				819A120CE663D3A0768B77B1 /* PersistedChatSession.swift */,
+				3C02E15750A42C5D5EA22EC5 /* WalletEntry.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		496E550A2D0EB53C6286B1F5 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		52B73ABA466C984C16A73BAC /* Widgets */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Widgets;
+			sourceTree = "<group>";
+		};
+		5353CACC99718650CEFC193E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7A10CC510B01A04C02B979E8 /* Aomi.app */,
+				27448EFCEA2C2C13F227215E /* AomiTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5CBCCF5A233A52C28036BFB6 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				52B73ABA466C984C16A73BAC /* Widgets */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
+		66CFEAF9A1312757DB11D492 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5CBCCF5A233A52C28036BFB6 /* Chat */,
+				20A7DDFB472877F0389AEE11 /* Onboarding */,
+				B535A9DB78F6BB8F541795E4 /* SessionList */,
+				123B5B04825A8BE7496D3F70 /* Wallet */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		70D02C38A6A6C515E3A3EDA8 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A76E5F0C27B53503143E40D5 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				D8A9BD0CD688BDAE30FC2502 /* AomiApp.swift */,
+				6D4DCFF657482DD3FE507CC4 /* AppConfig.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		B535A9DB78F6BB8F541795E4 /* SessionList */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = SessionList;
+			sourceTree = "<group>";
+		};
+		CC54E2433FBB0478F46DA9C6 /* AomiTests */ = {
+			isa = PBXGroup;
+			children = (
+				2B07100BC8C4B603F199C97E /* AomiTests.swift */,
+			);
+			path = AomiTests;
+			sourceTree = "<group>";
+		};
+		E4D29B58884567E35D478A98 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		F33D4E6EDC0DF40EA623EF6F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				43E9B94316445A6528724056 /* Persistence */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8FD980B3E6F1081805FD196F /* AomiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3590D54D1BC17724875E54B1 /* Build configuration list for PBXNativeTarget "AomiTests" */;
+			buildPhases = (
+				5A6B2D861E6208C243E92EB3 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F58CF202C677D44A7991F3E3 /* PBXTargetDependency */,
+			);
+			name = AomiTests;
+			packageProductDependencies = (
+			);
+			productName = AomiTests;
+			productReference = 27448EFCEA2C2C13F227215E /* AomiTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		97D8F11F443FA1A02583907C /* Aomi */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7C9D3EEFF0F8DFCABCB793D5 /* Build configuration list for PBXNativeTarget "Aomi" */;
+			buildPhases = (
+				87D400EDF670133BF2143268 /* Sources */,
+				B1EBF662B44A4FE9A86CEBC4 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Aomi;
+			packageProductDependencies = (
+				65AD6AC37F9834BA3FEEFA8B /* ParaSwift */,
+				B18EF27C0031907FFA251AB6 /* MarkdownUI */,
+			);
+			productName = Aomi;
+			productReference = 7A10CC510B01A04C02B979E8 /* Aomi.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E8C3B0D189870EEBA3D9EBE4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					8FD980B3E6F1081805FD196F = {
+						DevelopmentTeam = "";
+					};
+					97D8F11F443FA1A02583907C = {
+						DevelopmentTeam = "";
+					};
+				};
+			};
+			buildConfigurationList = BD304DD0F0904BB3E33F81FB /* Build configuration list for PBXProject "Aomi" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 1E046E9DB03F602F073EC49F;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				EB2D71CA180C925F326A7EA4 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				85B7D3B65611CD5401E2E40E /* XCRemoteSwiftPackageReference "swift-sdk" */,
+			);
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				97D8F11F443FA1A02583907C /* Aomi */,
+				8FD980B3E6F1081805FD196F /* AomiTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5A6B2D861E6208C243E92EB3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C2F40CD6F55B9386B15B912 /* AomiTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		87D400EDF670133BF2143268 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DFA0B102788697CB6CF40939 /* AomiApp.swift in Sources */,
+				3E1744AC6F9A743205AA8204 /* AppConfig.swift in Sources */,
+				96BCC4541314930A78AFE589 /* PersistedChatSession.swift in Sources */,
+				505DD62606464921D60EAF28 /* WalletEntry.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F58CF202C677D44A7991F3E3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 97D8F11F443FA1A02583907C /* Aomi */;
+			targetProxy = A2BD061CF8A76DFDD594CF5A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		002330F13F93FC576D7C72EC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		25996E5D1FF475A9A636F59E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		9CCA0CCC3AD9D06F693A6615 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.aomi.AomiTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Aomi.app/Aomi";
+			};
+			name = Release;
+		};
+		9E1A96B7004E1494871D1A56 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.aomi.AomiTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Aomi.app/Aomi";
+			};
+			name = Debug;
+		};
+		E709CD8F27914BE710542271 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.aomi.Aomi;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		FBB05B8CFC9BF1EB051DBDDA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = io.aomi.Aomi;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3590D54D1BC17724875E54B1 /* Build configuration list for PBXNativeTarget "AomiTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9E1A96B7004E1494871D1A56 /* Debug */,
+				9CCA0CCC3AD9D06F693A6615 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7C9D3EEFF0F8DFCABCB793D5 /* Build configuration list for PBXNativeTarget "Aomi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FBB05B8CFC9BF1EB051DBDDA /* Debug */,
+				E709CD8F27914BE710542271 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BD304DD0F0904BB3E33F81FB /* Build configuration list for PBXProject "Aomi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				25996E5D1FF475A9A636F59E /* Debug */,
+				002330F13F93FC576D7C72EC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		85B7D3B65611CD5401E2E40E /* XCRemoteSwiftPackageReference "swift-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getpara/swift-sdk";
+			requirement = {
+				kind = exactVersion;
+				version = 2.6.0;
+			};
+		};
+		EB2D71CA180C925F326A7EA4 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		65AD6AC37F9834BA3FEEFA8B /* ParaSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 85B7D3B65611CD5401E2E40E /* XCRemoteSwiftPackageReference "swift-sdk" */;
+			productName = ParaSwift;
+		};
+		B18EF27C0031907FFA251AB6 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EB2D71CA180C925F326A7EA4 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = E8C3B0D189870EEBA3D9EBE4 /* Project object */;
+}
