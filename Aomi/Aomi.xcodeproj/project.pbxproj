@@ -23,6 +23,7 @@
 		4C47ECF66E79F7F2FAC7FCFA /* DeFiPositionWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5511105A37E45C941A4DC138 /* DeFiPositionWidget.swift */; };
 		505DD62606464921D60EAF28 /* WalletEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C02E15750A42C5D5EA22EC5 /* WalletEntry.swift */; };
 		53310A991F5AFEB1C9D771C0 /* WalletViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E534253809626A251479F36 /* WalletViewModel.swift */; };
+		5806880FBD8ECDDF21B38E3B /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD15E2935A70E7EAB896AED /* WelcomeView.swift */; };
 		657E9C59B2AF46D88F60D728 /* WalletRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6A91F32294508655F86B82 /* WalletRowView.swift */; };
 		6735D894AF6DE70720845274 /* AddWatchAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE5CBFE7682DE1715FB2101 /* AddWatchAddressView.swift */; };
 		6DCC064B0B56274D6373F00D /* TokenBalanceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DB4DA24E27865E13AB95C5 /* TokenBalanceWidget.swift */; };
@@ -34,11 +35,14 @@
 		AE1343BB6CD0FDCD061F6522 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC963B6EA11D1ECE299176A /* KeychainService.swift */; };
 		B06AFEA7C666C5BA23318728 /* ToolStepRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6913DEF8870F8F2362AB9820 /* ToolStepRow.swift */; };
 		B5135F0379063FD82EE8879E /* SessionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2497B51D128FE47B87A02A /* SessionListView.swift */; };
+		B91EACDB34522BFB00DF5B6D /* AuthLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C85ABA8DEC945629E1587A07 /* AuthLoginView.swift */; };
 		BBADD60A65694A470D8ECD21 /* ThinkingShimmerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2CDC2872FA7C26EB8CC9FF3 /* ThinkingShimmerView.swift */; };
 		C0F08EF94A8C0DF920E039B1 /* WalletManagementSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03887605FB2B6CA090C68312 /* WalletManagementSheet.swift */; };
 		C33C03618ADE2EF31D15D9B1 /* AssistantMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522615D8F7DA1D261DDA9E37 /* AssistantMessageView.swift */; };
+		C49F9D5DC5B8945A2D164A8C /* AuthVerifyOTPView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E0BC969E55331CA181BC0E /* AuthVerifyOTPView.swift */; };
 		CAFC54ED8F196FA2D7D112A0 /* ChatMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA95183686752E0757722CD /* ChatMessageView.swift */; };
 		D2B1B12B90C13BE6913DDD99 /* APIClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFE11F3814D521FB5DE463D /* APIClientTests.swift */; };
+		D32E2E7ACA0DF7EECF72D619 /* WalletPromptCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEDC4573E7834ACB51C3397 /* WalletPromptCard.swift */; };
 		D3C50C0051FAB515C300999A /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAFC30E410801AA54B68AE7 /* JSONValue.swift */; };
 		DFA0B102788697CB6CF40939 /* AomiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A9BD0CD688BDAE30FC2502 /* AomiApp.swift */; };
 		DFE638DAD2C45BB864A90E78 /* WidgetRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62208E5B76F966862CB9C02 /* WidgetRenderer.swift */; };
@@ -64,6 +68,7 @@
 /* Begin PBXFileReference section */
 		03887605FB2B6CA090C68312 /* WalletManagementSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletManagementSheet.swift; sourceTree = "<group>"; };
 		0A6A91F32294508655F86B82 /* WalletRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletRowView.swift; sourceTree = "<group>"; };
+		0AEDC4573E7834ACB51C3397 /* WalletPromptCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletPromptCard.swift; sourceTree = "<group>"; };
 		0C27F1872770AD702CDF932B /* ToolUseCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolUseCard.swift; sourceTree = "<group>"; };
 		1E0E62D1E2C95E7A429562F4 /* WidgetPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPayload.swift; sourceTree = "<group>"; };
 		26F8AE1EDEA366839225E904 /* DeFiPositionDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeFiPositionDetailSheet.swift; sourceTree = "<group>"; };
@@ -98,12 +103,15 @@
 		AEE5CBFE7682DE1715FB2101 /* AddWatchAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWatchAddressView.swift; sourceTree = "<group>"; };
 		B2E8A3F5DF86C3F8991BF249 /* ParaWalletService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParaWalletService.swift; sourceTree = "<group>"; };
 		C2CDC2872FA7C26EB8CC9FF3 /* ThinkingShimmerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThinkingShimmerView.swift; sourceTree = "<group>"; };
+		C85ABA8DEC945629E1587A07 /* AuthLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthLoginView.swift; sourceTree = "<group>"; };
+		D4E0BC969E55331CA181BC0E /* AuthVerifyOTPView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthVerifyOTPView.swift; sourceTree = "<group>"; };
 		D8A9BD0CD688BDAE30FC2502 /* AomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AomiApp.swift; sourceTree = "<group>"; };
 		D90740BCC518788DFF10C2C3 /* SessionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionListViewModel.swift; sourceTree = "<group>"; };
 		DBC5E12AD36D63E209377A34 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		DFE415F2BF2A582E0ECD8468 /* SessionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionRowView.swift; sourceTree = "<group>"; };
 		F60EEB39B6842B3986FDCBD7 /* ModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsTests.swift; sourceTree = "<group>"; };
 		F62208E5B76F966862CB9C02 /* WidgetRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetRenderer.swift; sourceTree = "<group>"; };
+		FDD15E2935A70E7EAB896AED /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +149,10 @@
 		20A7DDFB472877F0389AEE11 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				C85ABA8DEC945629E1587A07 /* AuthLoginView.swift */,
+				D4E0BC969E55331CA181BC0E /* AuthVerifyOTPView.swift */,
+				0AEDC4573E7834ACB51C3397 /* WalletPromptCard.swift */,
+				FDD15E2935A70E7EAB896AED /* WelcomeView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -390,6 +402,8 @@
 				DFA0B102788697CB6CF40939 /* AomiApp.swift in Sources */,
 				3E1744AC6F9A743205AA8204 /* AppConfig.swift in Sources */,
 				C33C03618ADE2EF31D15D9B1 /* AssistantMessageView.swift in Sources */,
+				B91EACDB34522BFB00DF5B6D /* AuthLoginView.swift in Sources */,
+				C49F9D5DC5B8945A2D164A8C /* AuthVerifyOTPView.swift in Sources */,
 				87CB42683B8E577B73EF5ABD /* AuthViewModel.swift in Sources */,
 				341EC89C9A1CBCE64A79AB97 /* ChatContent.swift in Sources */,
 				F67D864363BB67C756CB4D01 /* ChatInputBar.swift in Sources */,
@@ -417,8 +431,10 @@
 				28D616CB1B068ED7582F9276 /* UserBubbleView.swift in Sources */,
 				505DD62606464921D60EAF28 /* WalletEntry.swift in Sources */,
 				C0F08EF94A8C0DF920E039B1 /* WalletManagementSheet.swift in Sources */,
+				D32E2E7ACA0DF7EECF72D619 /* WalletPromptCard.swift in Sources */,
 				657E9C59B2AF46D88F60D728 /* WalletRowView.swift in Sources */,
 				53310A991F5AFEB1C9D771C0 /* WalletViewModel.swift in Sources */,
+				5806880FBD8ECDDF21B38E3B /* WelcomeView.swift in Sources */,
 				15D77BBF1ADD7EB62A76AEB3 /* WidgetPayload.swift in Sources */,
 				DFE638DAD2C45BB864A90E78 /* WidgetRenderer.swift in Sources */,
 			);
