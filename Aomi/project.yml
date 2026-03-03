@@ -27,32 +27,13 @@ targets:
       - path: Aomi
     entitlements:
       path: Aomi/Aomi.entitlements
-    info:
-      path: Aomi/Info.plist
-      properties:
-        CFBundleDisplayName: Aomi
-        UIApplicationSceneManifest:
-          UIApplicationSupportsMultipleScenes: false
-        UILaunchScreen: {}
-        UISupportedInterfaceOrientations:
-          - UIInterfaceOrientationPortrait
-        UISupportedInterfaceOrientations~ipad:
-          - UIInterfaceOrientationPortrait
-          - UIInterfaceOrientationPortraitUpsideDown
-          - UIInterfaceOrientationLandscapeLeft
-          - UIInterfaceOrientationLandscapeRight
-        CFBundleURLTypes:
-          - CFBundleTypeRole: Editor
-            CFBundleURLSchemes:
-              - paraswift
-          - CFBundleTypeRole: Editor
-            CFBundleURLSchemes:
-              - aomi
     settings:
       base:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         CURRENT_PROJECT_VERSION: 2
         MARKETING_VERSION: "1.0.0"
+        INFOPLIST_FILE: Aomi/Info.plist
+        GENERATE_INFOPLIST_FILE: false
       configs:
         Release:
           CODE_SIGN_IDENTITY: "iPhone Distribution"

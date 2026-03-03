@@ -644,6 +644,7 @@
 				CODE_SIGN_ENTITLEMENTS = Aomi/Aomi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CURRENT_PROJECT_VERSION = 2;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Aomi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -664,6 +665,7 @@
 				CODE_SIGN_ENTITLEMENTS = Aomi/Aomi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 2;
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Aomi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
