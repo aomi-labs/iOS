@@ -1,0 +1,48 @@
+name: Aomi
+options:
+  bundleIdPrefix: io.aomi
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "16.0"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    DEVELOPMENT_TEAM: ""
+
+packages:
+  ParaSwift:
+    url: https://github.com/getpara/swift-sdk
+    exactVersion: "2.6.0"
+  MarkdownUI:
+    url: https://github.com/gonzalezreal/swift-markdown-ui
+    from: "2.4.0"
+
+targets:
+  Aomi:
+    type: application
+    platform: iOS
+    sources:
+      - path: Aomi
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: true
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: true
+        INFOPLIST_KEY_UILaunchScreen_Generation: true
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait"
+    dependencies:
+      - package: ParaSwift
+      - package: MarkdownUI
+
+  AomiTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: AomiTests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: true
+    dependencies:
+      - target: Aomi
