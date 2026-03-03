@@ -33,7 +33,10 @@ struct AomiApp: App {
                 if walletService.isLoggedIn {
                     try? await walletService.fetchWallets()
                 }
-                if let address = walletService.primaryAddress {
+                // Restore persisted active wallet, or fall back to primary Para wallet
+                if let saved = UserDefaults.standard.string(forKey: "activeWalletAddress"), !saved.isEmpty {
+                    apiClient.publicKey = saved
+                } else if let address = walletService.primaryAddress {
                     apiClient.publicKey = address
                 }
             }

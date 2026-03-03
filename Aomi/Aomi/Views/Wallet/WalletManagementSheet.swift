@@ -10,6 +10,7 @@ struct WalletManagementSheet: View {
     @State private var showAddWatch = false
     @State private var showLogin = false
     @State private var hasCheckedWallets = false
+    @State private var showLogoutConfirmation = false
 
     private var hasNoWallets: Bool {
         guard let viewModel else { return false }
@@ -65,6 +66,7 @@ struct WalletManagementSheet: View {
                     get: { walletService.isLoggedIn },
                     set: { newValue in
                         if newValue {
+                            showLogin = false
                             Task {
                                 try? await walletService.fetchWallets()
                                 if let address = walletService.primaryAddress {
@@ -128,7 +130,24 @@ struct WalletManagementSheet: View {
     @ViewBuilder
     private func walletList(_ vm: WalletViewModel) -> some View {
         List {
-            if !walletService.isLoggedIn {
+            if walletService.isLoggedIn {
+                Section("Account") {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(walletService.email ?? "Signed in")
+                                .font(.subheadline)
+                            Text("Para Wallet")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Button("Log Out", role: .destructive) {
+                            showLogoutConfirmation = true
+                        }
+                        .font(.subheadline)
+                    }
+                }
+            } else {
                 Section {
                     Button {
                         showLogin = true
@@ -140,23 +159,67 @@ struct WalletManagementSheet: View {
             if !vm.paraWallets.isEmpty {
                 Section("Signing Wallets") {
                     ForEach(vm.paraWallets) { wallet in
-                        WalletRowView(address: wallet.address, chain: wallet.chain, label: nil, badge: "signing")
+                        Button {
+                            selectWallet(address: wallet.address)
+                        } label: {
+                            HStack {
+                                WalletRowView(address: wallet.address, chain: wallet.chain, label: nil, badge: "signing")
+                                if apiClient.publicKey == wallet.address {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(.blue)
+                                }
+                            }
+                        }
+                        .tint(.primary)
                     }
                 }
             }
             if !vm.watchAddresses.isEmpty {
                 Section("Watch Only") {
                     ForEach(vm.watchAddresses) { entry in
-                        WalletRowView(address: entry.address, chain: entry.chain, label: entry.label, badge: "read-only")
+                        Button {
+                            selectWallet(address: entry.address)
+                        } label: {
+                            HStack {
+                                WalletRowView(address: entry.address, chain: entry.chain, label: entry.label, badge: "read-only")
+                                if apiClient.publicKey == entry.address {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundStyle(.blue)
+                                }
+                            }
+                        }
+                        .tint(.primary)
                     }
                     .onDelete { indexSet in
                         for i in indexSet {
-                            vm.removeWatchAddress(vm.watchAddresses[i], modelContext: modelContext)
+                            let entry = vm.watchAddresses[i]
+                            if apiClient.publicKey == entry.address {
+                                apiClient.publicKey = walletService.primaryAddress
+                            }
+                            vm.removeWatchAddress(entry, modelContext: modelContext)
                         }
                     }
                 }
             }
         }
+        .confirmationDialog("Log out of Para?", isPresented: $showLogoutConfirmation, titleVisibility: .visible) {
+            Button("Log Out", role: .destructive) {
+                Task {
+                    await walletService.logout()
+                    apiClient.publicKey = nil
+                    UserDefaults.standard.removeObject(forKey: "activeWalletAddress")
+                    await vm.loadWallets()
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Your signing wallets will be removed from this device.")
+        }
+    }
+
+    private func selectWallet(address: String) {
+        apiClient.publicKey = address
+        UserDefaults.standard.set(address, forKey: "activeWalletAddress")
     }
 
     private func createParaWallet(_ type: ParaSwift.WalletType) {

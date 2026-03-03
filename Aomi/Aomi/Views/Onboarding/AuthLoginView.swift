@@ -126,7 +126,7 @@ struct AuthLoginView: View {
                         .buttonStyle(AomiButtonStyle(isEnabled: isValidInput && !isLoading))
                         .disabled(!isValidInput || isLoading)
 
-                        Text("During testing, any verification code will work")
+                        Text("For testing, use <username>@test.getpara.com")
                             .font(.system(size: 13))
                             .foregroundColor(AomiColors.labelTertiary)
                             .multilineTextAlignment(.center)

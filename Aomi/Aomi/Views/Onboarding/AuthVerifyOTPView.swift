@@ -98,7 +98,7 @@ struct AuthVerifyOTPView: View {
                     .buttonStyle(AomiButtonStyle(isEnabled: otpCode.count == otpLength && !isVerifying))
                     .disabled(otpCode.count != otpLength || isVerifying)
 
-                    Text("During testing, any verification code will work")
+                    Text("For testing, use 123456 as the verification code")
                         .font(.system(size: 13))
                         .foregroundColor(AomiColors.labelTertiary)
                         .multilineTextAlignment(.center)

@@ -22,7 +22,7 @@ struct SessionListView: View {
                     Button {
                         showWalletSheet = true
                     } label: {
-                        if let address = walletService.primaryAddress {
+                        if let address = apiClient.publicKey {
                             Text(truncateAddress(address))
                                 .font(.caption.monospaced())
                         } else {
