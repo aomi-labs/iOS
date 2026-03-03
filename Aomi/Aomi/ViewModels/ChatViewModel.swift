@@ -100,7 +100,7 @@ final class ChatViewModel {
                 if let widget = parseWidget(topic: toolResult.topic, content: toolResult.content) {
                     content.append(.widget(widget))
                 } else if !toolResult.content.isEmpty {
-                    content.append(.text(apiMsg.content))
+                    content.append(.text(toolResult.content))
                 }
             }
 
