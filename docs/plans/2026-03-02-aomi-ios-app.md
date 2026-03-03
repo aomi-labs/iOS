@@ -173,6 +173,7 @@ import Foundation
 
 enum AppConfig {
     #if DEBUG
+    // Use "localhost" for simulator, or your machine's local IP (e.g., "192.168.1.5") for physical devices.
     static let apiBaseURL = "http://localhost:8080"
     #else
     static let apiBaseURL = "https://api.aomi.io"
@@ -180,6 +181,11 @@ enum AppConfig {
 
     static let paraEnvironment = "beta" // "beta" or "prod"
     static let paraAppScheme = "aomi"
+    
+    // Suggestion: Use a CDN for token icons
+    static func tokenIconURL(symbol: String) -> URL? {
+        URL(string: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/\(symbol)/logo.png")
+    }
 }
 ```
 
@@ -895,7 +901,12 @@ final class AomiAPIClient {
             throw APIError.httpError(httpResponse.statusCode)
         }
         let decoder = JSONDecoder()
-        return try decoder.decode(T.self, from: data)
+        do {
+            return try decoder.decode(T.self, from: data)
+        } catch {
+            print("Decoding Error for \(T.self): \(error)")
+            throw APIError.decodingError(error)
+        }
     }
 
     enum APIError: Error {
@@ -903,6 +914,7 @@ final class AomiAPIClient {
         case noPublicKey
         case invalidResponse
         case httpError(Int)
+        case decodingError(Error)
     }
 }
 ```
@@ -1535,8 +1547,11 @@ final class ChatViewModel {
             newMessages.append(ChatMessage(role: role, content: content))
         }
 
-        // Only update if message count changed (avoid flicker)
-        if newMessages.count != lastMessageCount {
+        // Update if message count OR last message content changed (for streaming)
+        let lastMsgContent = messages.last?.textContent ?? ""
+        let newLastMsgContent = newMessages.last?.textContent ?? ""
+        
+        if newMessages.count != lastMessageCount || lastMsgContent != newLastMsgContent {
             messages = newMessages
             lastMessageCount = newMessages.count
             if let last = newMessages.last, last.role == .assistant {
@@ -2083,6 +2098,14 @@ struct PortfolioOverviewWidget: View {
                     selectedToken = token.symbol
                 } label: {
                     HStack(spacing: 10) {
+                        // Token icon
+                        AsyncImage(url: AppConfig.tokenIconURL(symbol: token.symbol.lowercased())) { image in
+                            image.resizable().aspectRatio(contentMode: .fit)
+                        } placeholder: {
+                            Circle().fill(Color(.systemGray4))
+                        }
+                        .frame(width: 24, height: 24)
+
                         Text(token.symbol)
                             .font(.subheadline.bold())
                             .frame(width: 50, alignment: .leading)
@@ -2211,7 +2234,7 @@ import SwiftUI
 struct PriceChartWidget: View {
     let data: JSONValue
     @State private var selectedPeriod = "1W"
-    @State private var selectedPrice: Double?
+    @State private var selectedIndex: Int?
 
     private let periods = ["1D", "1W", "1M", "1Y"]
 
@@ -2221,7 +2244,7 @@ struct PriceChartWidget: View {
                 Text(symbol)
                     .font(.headline)
                 Spacer()
-                Text(selectedPrice.map { String(format: "$%.2f", $0) } ?? currentPrice)
+                Text(selectedIndex.map { String(format: "$%.2f", chartData[$0]) } ?? currentPrice)
                     .font(.title3.bold())
             }
 
@@ -2247,7 +2270,7 @@ struct PriceChartWidget: View {
             }
             .chartXAxis(.hidden)
             .chartYAxis(.hidden)
-            .chartXSelection(value: $selectedPrice)
+            .chartXSelection(value: $selectedIndex)
             .frame(height: 160)
 
             // Period selector
@@ -2587,6 +2610,7 @@ import SwiftUI
 
 struct WalletManagementSheet: View {
     @Environment(ParaWalletService.self) private var walletService
+    @Environment(AomiAPIClient.self) private var apiClient
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: WalletViewModel?
@@ -2625,6 +2649,8 @@ struct WalletManagementSheet: View {
                 if let viewModel {
                     AddWatchAddressView { address, chain, label in
                         viewModel.addWatchAddress(address, chain: chain, label: label, modelContext: modelContext)
+                        // Bind wallet to backend
+                        Task { try? await apiClient.bindWallet(address: address, platform: "ios", platformUserId: "local") }
                     }
                 }
             }
