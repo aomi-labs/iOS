@@ -4,14 +4,23 @@ struct WidgetRenderer: View {
     let payload: WidgetPayload
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label(payload.widgetType, systemImage: "square.grid.2x2")
-                .font(.caption.bold())
+        switch payload.widgetType {
+        case WidgetPayload.portfolioOverview:
+            PortfolioOverviewWidget(data: payload.data)
+        case WidgetPayload.tokenBalance:
+            TokenBalanceWidget(data: payload.data)
+        case WidgetPayload.priceChart:
+            PriceChartWidget(data: payload.data)
+        case WidgetPayload.defiPosition:
+            DeFiPositionWidget(data: payload.data)
+        case WidgetPayload.transactionConfirmation:
+            TransactionConfirmationWidget(data: payload.data)
+        default:
+            // Unknown widget -- render raw JSON
             Text(payload.data.prettyString)
-                .font(.system(.caption2, design: .monospaced))
-                .lineLimit(5)
+                .font(.system(.caption, design: .monospaced))
+                .padding(10)
+                .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 12))
         }
-        .padding(12)
-        .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 12))
     }
 }

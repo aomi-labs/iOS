@@ -9,15 +9,21 @@
 /* Begin PBXBuildFile section */
 		15D77BBF1ADD7EB62A76AEB3 /* WidgetPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0E62D1E2C95E7A429562F4 /* WidgetPayload.swift */; };
 		21713526ED0EDCA31C94F0C5 /* ToolUseCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C27F1872770AD702CDF932B /* ToolUseCard.swift */; };
+		217AEE1E61F0A7F48B0D8D35 /* DeFiPositionDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F8AE1EDEA366839225E904 /* DeFiPositionDetailSheet.swift */; };
 		28D616CB1B068ED7582F9276 /* UserBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BF2DA2A59E7830EBF38BD27 /* UserBubbleView.swift */; };
 		2C2F40CD6F55B9386B15B912 /* AomiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B07100BC8C4B603F199C97E /* AomiTests.swift */; };
+		2C7262F668CB22EFEFE4D689 /* TransactionConfirmationWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C338AE6D5080C8A57A9A990 /* TransactionConfirmationWidget.swift */; };
+		3155A4A13E5CD90C29A26C0C /* PortfolioOverviewWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = A020D9F1094FA2867D0CD520 /* PortfolioOverviewWidget.swift */; };
 		341EC89C9A1CBCE64A79AB97 /* ChatContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221814619F682AD2F819FC1 /* ChatContent.swift */; };
 		392BD704ED742F7889B257A9 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D5384524D662B9D6788880 /* ChatViewModel.swift */; };
 		3E1744AC6F9A743205AA8204 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4DCFF657482DD3FE507CC4 /* AppConfig.swift */; };
+		3F9E00CDF490657E3905EA7A /* PriceChartWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5252B5EC21F2E4C8A0A07E /* PriceChartWidget.swift */; };
 		44274DD2938265D67CEC57FB /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = B18EF27C0031907FFA251AB6 /* MarkdownUI */; };
 		459D7F54B749315A487B2A3F /* ToolDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E018890150D2C4E5DC4E24 /* ToolDetailSheet.swift */; };
+		4C47ECF66E79F7F2FAC7FCFA /* DeFiPositionWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5511105A37E45C941A4DC138 /* DeFiPositionWidget.swift */; };
 		505DD62606464921D60EAF28 /* WalletEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C02E15750A42C5D5EA22EC5 /* WalletEntry.swift */; };
 		53310A991F5AFEB1C9D771C0 /* WalletViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E534253809626A251479F36 /* WalletViewModel.swift */; };
+		6DCC064B0B56274D6373F00D /* TokenBalanceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DB4DA24E27865E13AB95C5 /* TokenBalanceWidget.swift */; };
 		7201FB723FF942F8D900244C /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8BA0DC932549AD499D58D8 /* ChatMessage.swift */; };
 		87CB42683B8E577B73EF5ABD /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8C53A03937DD105B2CE9DF /* AuthViewModel.swift */; };
 		96BCC4541314930A78AFE589 /* PersistedChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819A120CE663D3A0768B77B1 /* PersistedChatSession.swift */; };
@@ -57,6 +63,7 @@
 		03887605FB2B6CA090C68312 /* WalletManagementSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletManagementSheet.swift; sourceTree = "<group>"; };
 		0C27F1872770AD702CDF932B /* ToolUseCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolUseCard.swift; sourceTree = "<group>"; };
 		1E0E62D1E2C95E7A429562F4 /* WidgetPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPayload.swift; sourceTree = "<group>"; };
+		26F8AE1EDEA366839225E904 /* DeFiPositionDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeFiPositionDetailSheet.swift; sourceTree = "<group>"; };
 		27448EFCEA2C2C13F227215E /* AomiTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AomiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B07100BC8C4B603F199C97E /* AomiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AomiTests.swift; sourceTree = "<group>"; };
 		2BF2DA2A59E7830EBF38BD27 /* UserBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBubbleView.swift; sourceTree = "<group>"; };
@@ -67,8 +74,10 @@
 		4E534253809626A251479F36 /* WalletViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewModel.swift; sourceTree = "<group>"; };
 		4F8C53A03937DD105B2CE9DF /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		522615D8F7DA1D261DDA9E37 /* AssistantMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantMessageView.swift; sourceTree = "<group>"; };
+		5511105A37E45C941A4DC138 /* DeFiPositionWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeFiPositionWidget.swift; sourceTree = "<group>"; };
 		5D58D4AE77ED34DD5C9D692E /* ChatInputBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInputBar.swift; sourceTree = "<group>"; };
 		6913DEF8870F8F2362AB9820 /* ToolStepRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolStepRow.swift; sourceTree = "<group>"; };
+		6C338AE6D5080C8A57A9A990 /* TransactionConfirmationWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionConfirmationWidget.swift; sourceTree = "<group>"; };
 		6D4DCFF657482DD3FE507CC4 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		751A1062D6270F042A13DA89 /* APITypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITypes.swift; sourceTree = "<group>"; };
 		7A10CC510B01A04C02B979E8 /* Aomi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Aomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,8 +86,11 @@
 		8BAFC30E410801AA54B68AE7 /* JSONValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValue.swift; sourceTree = "<group>"; };
 		90E018890150D2C4E5DC4E24 /* ToolDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolDetailSheet.swift; sourceTree = "<group>"; };
 		9221814619F682AD2F819FC1 /* ChatContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatContent.swift; sourceTree = "<group>"; };
+		96DB4DA24E27865E13AB95C5 /* TokenBalanceWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenBalanceWidget.swift; sourceTree = "<group>"; };
 		9CC963B6EA11D1ECE299176A /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		9D8BA0DC932549AD499D58D8 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		9F5252B5EC21F2E4C8A0A07E /* PriceChartWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceChartWidget.swift; sourceTree = "<group>"; };
+		A020D9F1094FA2867D0CD520 /* PortfolioOverviewWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioOverviewWidget.swift; sourceTree = "<group>"; };
 		A7D5384524D662B9D6788880 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		B2E8A3F5DF86C3F8991BF249 /* ParaWalletService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParaWalletService.swift; sourceTree = "<group>"; };
 		C2CDC2872FA7C26EB8CC9FF3 /* ThinkingShimmerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThinkingShimmerView.swift; sourceTree = "<group>"; };
@@ -163,6 +175,12 @@
 		52B73ABA466C984C16A73BAC /* Widgets */ = {
 			isa = PBXGroup;
 			children = (
+				26F8AE1EDEA366839225E904 /* DeFiPositionDetailSheet.swift */,
+				5511105A37E45C941A4DC138 /* DeFiPositionWidget.swift */,
+				A020D9F1094FA2867D0CD520 /* PortfolioOverviewWidget.swift */,
+				9F5252B5EC21F2E4C8A0A07E /* PriceChartWidget.swift */,
+				96DB4DA24E27865E13AB95C5 /* TokenBalanceWidget.swift */,
+				6C338AE6D5080C8A57A9A990 /* TransactionConfirmationWidget.swift */,
 				F62208E5B76F966862CB9C02 /* WidgetRenderer.swift */,
 			);
 			path = Widgets;
@@ -372,17 +390,23 @@
 				CAFC54ED8F196FA2D7D112A0 /* ChatMessageView.swift in Sources */,
 				EAFF2ED18EEF50E91A046491 /* ChatView.swift in Sources */,
 				392BD704ED742F7889B257A9 /* ChatViewModel.swift in Sources */,
+				217AEE1E61F0A7F48B0D8D35 /* DeFiPositionDetailSheet.swift in Sources */,
+				4C47ECF66E79F7F2FAC7FCFA /* DeFiPositionWidget.swift in Sources */,
 				D3C50C0051FAB515C300999A /* JSONValue.swift in Sources */,
 				AE1343BB6CD0FDCD061F6522 /* KeychainService.swift in Sources */,
 				F3BCF75960819DF9DBA0DD74 /* ParaWalletService.swift in Sources */,
 				96BCC4541314930A78AFE589 /* PersistedChatSession.swift in Sources */,
+				3155A4A13E5CD90C29A26C0C /* PortfolioOverviewWidget.swift in Sources */,
+				3F9E00CDF490657E3905EA7A /* PriceChartWidget.swift in Sources */,
 				B5135F0379063FD82EE8879E /* SessionListView.swift in Sources */,
 				E5CDE7C1625DF3A32BDD6676 /* SessionListViewModel.swift in Sources */,
 				9BA9401E63DFD4673C043453 /* SessionRowView.swift in Sources */,
 				BBADD60A65694A470D8ECD21 /* ThinkingShimmerView.swift in Sources */,
+				6DCC064B0B56274D6373F00D /* TokenBalanceWidget.swift in Sources */,
 				459D7F54B749315A487B2A3F /* ToolDetailSheet.swift in Sources */,
 				B06AFEA7C666C5BA23318728 /* ToolStepRow.swift in Sources */,
 				21713526ED0EDCA31C94F0C5 /* ToolUseCard.swift in Sources */,
+				2C7262F668CB22EFEFE4D689 /* TransactionConfirmationWidget.swift in Sources */,
 				28D616CB1B068ED7582F9276 /* UserBubbleView.swift in Sources */,
 				505DD62606464921D60EAF28 /* WalletEntry.swift in Sources */,
 				C0F08EF94A8C0DF920E039B1 /* WalletManagementSheet.swift in Sources */,
