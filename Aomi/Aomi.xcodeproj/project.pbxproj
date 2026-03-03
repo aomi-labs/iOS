@@ -7,12 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		15D77BBF1ADD7EB62A76AEB3 /* WidgetPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0E62D1E2C95E7A429562F4 /* WidgetPayload.swift */; };
+		21713526ED0EDCA31C94F0C5 /* ToolUseCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C27F1872770AD702CDF932B /* ToolUseCard.swift */; };
 		2C2F40CD6F55B9386B15B912 /* AomiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B07100BC8C4B603F199C97E /* AomiTests.swift */; };
+		341EC89C9A1CBCE64A79AB97 /* ChatContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221814619F682AD2F819FC1 /* ChatContent.swift */; };
 		3E1744AC6F9A743205AA8204 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4DCFF657482DD3FE507CC4 /* AppConfig.swift */; };
 		44274DD2938265D67CEC57FB /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = B18EF27C0031907FFA251AB6 /* MarkdownUI */; };
 		505DD62606464921D60EAF28 /* WalletEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C02E15750A42C5D5EA22EC5 /* WalletEntry.swift */; };
+		7201FB723FF942F8D900244C /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8BA0DC932549AD499D58D8 /* ChatMessage.swift */; };
 		96BCC4541314930A78AFE589 /* PersistedChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819A120CE663D3A0768B77B1 /* PersistedChatSession.swift */; };
+		9F5F6CA2BED2B6B722B9DC4D /* ModelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60EEB39B6842B3986FDCBD7 /* ModelsTests.swift */; };
+		D3C50C0051FAB515C300999A /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAFC30E410801AA54B68AE7 /* JSONValue.swift */; };
 		DFA0B102788697CB6CF40939 /* AomiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A9BD0CD688BDAE30FC2502 /* AomiApp.swift */; };
+		F5237E7C75E9F7A24DD589F1 /* APITypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751A1062D6270F042A13DA89 /* APITypes.swift */; };
 		FF695D211F5751954E3ABA93 /* ParaSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 65AD6AC37F9834BA3FEEFA8B /* ParaSwift */; };
 /* End PBXBuildFile section */
 
@@ -27,13 +34,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0C27F1872770AD702CDF932B /* ToolUseCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolUseCard.swift; sourceTree = "<group>"; };
+		1E0E62D1E2C95E7A429562F4 /* WidgetPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPayload.swift; sourceTree = "<group>"; };
 		27448EFCEA2C2C13F227215E /* AomiTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AomiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B07100BC8C4B603F199C97E /* AomiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AomiTests.swift; sourceTree = "<group>"; };
 		3C02E15750A42C5D5EA22EC5 /* WalletEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletEntry.swift; sourceTree = "<group>"; };
 		6D4DCFF657482DD3FE507CC4 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		751A1062D6270F042A13DA89 /* APITypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITypes.swift; sourceTree = "<group>"; };
 		7A10CC510B01A04C02B979E8 /* Aomi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Aomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		819A120CE663D3A0768B77B1 /* PersistedChatSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistedChatSession.swift; sourceTree = "<group>"; };
+		8BAFC30E410801AA54B68AE7 /* JSONValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValue.swift; sourceTree = "<group>"; };
+		9221814619F682AD2F819FC1 /* ChatContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatContent.swift; sourceTree = "<group>"; };
+		9D8BA0DC932549AD499D58D8 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		D8A9BD0CD688BDAE30FC2502 /* AomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AomiApp.swift; sourceTree = "<group>"; };
+		F60EEB39B6842B3986FDCBD7 /* ModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				2B07100BC8C4B603F199C97E /* AomiTests.swift */,
+				F60EEB39B6842B3986FDCBD7 /* ModelsTests.swift */,
 			);
 			path = AomiTests;
 			sourceTree = "<group>";
@@ -170,6 +185,7 @@
 		E4D29B58884567E35D478A98 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				8BAFC30E410801AA54B68AE7 /* JSONValue.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -177,6 +193,11 @@
 		F33D4E6EDC0DF40EA623EF6F /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				751A1062D6270F042A13DA89 /* APITypes.swift */,
+				9221814619F682AD2F819FC1 /* ChatContent.swift */,
+				9D8BA0DC932549AD499D58D8 /* ChatMessage.swift */,
+				0C27F1872770AD702CDF932B /* ToolUseCard.swift */,
+				1E0E62D1E2C95E7A429562F4 /* WidgetPayload.swift */,
 				43E9B94316445A6528724056 /* Persistence */,
 			);
 			path = Models;
@@ -270,6 +291,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2C2F40CD6F55B9386B15B912 /* AomiTests.swift in Sources */,
+				9F5F6CA2BED2B6B722B9DC4D /* ModelsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,10 +299,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F5237E7C75E9F7A24DD589F1 /* APITypes.swift in Sources */,
 				DFA0B102788697CB6CF40939 /* AomiApp.swift in Sources */,
 				3E1744AC6F9A743205AA8204 /* AppConfig.swift in Sources */,
+				341EC89C9A1CBCE64A79AB97 /* ChatContent.swift in Sources */,
+				7201FB723FF942F8D900244C /* ChatMessage.swift in Sources */,
+				D3C50C0051FAB515C300999A /* JSONValue.swift in Sources */,
 				96BCC4541314930A78AFE589 /* PersistedChatSession.swift in Sources */,
+				21713526ED0EDCA31C94F0C5 /* ToolUseCard.swift in Sources */,
 				505DD62606464921D60EAF28 /* WalletEntry.swift in Sources */,
+				15D77BBF1ADD7EB62A76AEB3 /* WidgetPayload.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
