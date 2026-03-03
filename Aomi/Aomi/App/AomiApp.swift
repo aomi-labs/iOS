@@ -9,7 +9,7 @@ struct AomiApp: App {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     init() {
-        let apiKey = KeychainService.load(key: "para_api_key") ?? ""
+        let apiKey = KeychainService.load(key: "para_api_key") ?? AppConfig.paraAPIKey
         _walletService = State(wrappedValue: ParaWalletService(
             environment: .beta,
             apiKey: apiKey,
@@ -30,6 +30,9 @@ struct AomiApp: App {
             .environment(walletService)
             .task {
                 await walletService.checkAuthStatus()
+                if walletService.isLoggedIn {
+                    try? await walletService.fetchWallets()
+                }
                 if let address = walletService.primaryAddress {
                     apiClient.publicKey = address
                 }

@@ -70,7 +70,7 @@ final class AomiAPIClient {
         var request = URLRequest(url: URL(string: "\(baseURL)/api/sessions/\(sessionId)/archive")!)
         request.httpMethod = "POST"
         request.setValue(sessionId, forHTTPHeaderField: "X-Session-Id")
-        let _ = try await URLSession.shared.data(for: request)
+        try await executeVoid(request)
     }
 
     func renameSession(sessionId: String, title: String) async throws {
@@ -79,7 +79,7 @@ final class AomiAPIClient {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(sessionId, forHTTPHeaderField: "X-Session-Id")
         request.httpBody = try JSONEncoder().encode(["title": title])
-        let _ = try await URLSession.shared.data(for: request)
+        try await executeVoid(request)
     }
 
     // MARK: - Wallet
@@ -90,7 +90,7 @@ final class AomiAPIClient {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let body = ["wallet_address": address, "platform": platform, "platform_user_id": platformUserId]
         request.httpBody = try JSONEncoder().encode(body)
-        let _ = try await URLSession.shared.data(for: request)
+        try await executeVoid(request)
     }
 
     // MARK: - Request Builders (exposed for testing)
@@ -118,6 +118,16 @@ final class AomiAPIClient {
     }
 
     // MARK: - Internal
+
+    private func executeVoid(_ request: URLRequest) async throws {
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        guard (200...299).contains(httpResponse.statusCode) else {
+            throw APIError.httpError(httpResponse.statusCode)
+        }
+    }
 
     private func execute<T: Decodable>(_ request: URLRequest) async throws -> T {
         let (data, response) = try await URLSession.shared.data(for: request)
