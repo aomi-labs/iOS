@@ -18,11 +18,16 @@
 		7201FB723FF942F8D900244C /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8BA0DC932549AD499D58D8 /* ChatMessage.swift */; };
 		87CB42683B8E577B73EF5ABD /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8C53A03937DD105B2CE9DF /* AuthViewModel.swift */; };
 		96BCC4541314930A78AFE589 /* PersistedChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819A120CE663D3A0768B77B1 /* PersistedChatSession.swift */; };
+		9BA9401E63DFD4673C043453 /* SessionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE415F2BF2A582E0ECD8468 /* SessionRowView.swift */; };
 		9F5F6CA2BED2B6B722B9DC4D /* ModelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60EEB39B6842B3986FDCBD7 /* ModelsTests.swift */; };
 		AE1343BB6CD0FDCD061F6522 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC963B6EA11D1ECE299176A /* KeychainService.swift */; };
+		B5135F0379063FD82EE8879E /* SessionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C2497B51D128FE47B87A02A /* SessionListView.swift */; };
+		C0F08EF94A8C0DF920E039B1 /* WalletManagementSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03887605FB2B6CA090C68312 /* WalletManagementSheet.swift */; };
 		D2B1B12B90C13BE6913DDD99 /* APIClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFE11F3814D521FB5DE463D /* APIClientTests.swift */; };
 		D3C50C0051FAB515C300999A /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAFC30E410801AA54B68AE7 /* JSONValue.swift */; };
 		DFA0B102788697CB6CF40939 /* AomiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A9BD0CD688BDAE30FC2502 /* AomiApp.swift */; };
+		E5CDE7C1625DF3A32BDD6676 /* SessionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D90740BCC518788DFF10C2C3 /* SessionListViewModel.swift */; };
+		EAFF2ED18EEF50E91A046491 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBC5E12AD36D63E209377A34 /* ChatView.swift */; };
 		F08F00E35122E683D7906851 /* AomiAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D0AF2161DFA9F066F6C5FD2 /* AomiAPIClient.swift */; };
 		F3BCF75960819DF9DBA0DD74 /* ParaWalletService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2E8A3F5DF86C3F8991BF249 /* ParaWalletService.swift */; };
 		F5237E7C75E9F7A24DD589F1 /* APITypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 751A1062D6270F042A13DA89 /* APITypes.swift */; };
@@ -40,10 +45,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03887605FB2B6CA090C68312 /* WalletManagementSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletManagementSheet.swift; sourceTree = "<group>"; };
 		0C27F1872770AD702CDF932B /* ToolUseCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolUseCard.swift; sourceTree = "<group>"; };
 		1E0E62D1E2C95E7A429562F4 /* WidgetPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPayload.swift; sourceTree = "<group>"; };
 		27448EFCEA2C2C13F227215E /* AomiTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AomiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B07100BC8C4B603F199C97E /* AomiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AomiTests.swift; sourceTree = "<group>"; };
+		2C2497B51D128FE47B87A02A /* SessionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionListView.swift; sourceTree = "<group>"; };
 		3BFE11F3814D521FB5DE463D /* APIClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientTests.swift; sourceTree = "<group>"; };
 		3C02E15750A42C5D5EA22EC5 /* WalletEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletEntry.swift; sourceTree = "<group>"; };
 		4E534253809626A251479F36 /* WalletViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewModel.swift; sourceTree = "<group>"; };
@@ -59,6 +66,9 @@
 		9D8BA0DC932549AD499D58D8 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		B2E8A3F5DF86C3F8991BF249 /* ParaWalletService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParaWalletService.swift; sourceTree = "<group>"; };
 		D8A9BD0CD688BDAE30FC2502 /* AomiApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AomiApp.swift; sourceTree = "<group>"; };
+		D90740BCC518788DFF10C2C3 /* SessionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionListViewModel.swift; sourceTree = "<group>"; };
+		DBC5E12AD36D63E209377A34 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		DFE415F2BF2A582E0ECD8468 /* SessionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionRowView.swift; sourceTree = "<group>"; };
 		F60EEB39B6842B3986FDCBD7 /* ModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -78,6 +88,7 @@
 		123B5B04825A8BE7496D3F70 /* Wallet */ = {
 			isa = PBXGroup;
 			children = (
+				03887605FB2B6CA090C68312 /* WalletManagementSheet.swift */,
 			);
 			path = Wallet;
 			sourceTree = "<group>";
@@ -124,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				4F8C53A03937DD105B2CE9DF /* AuthViewModel.swift */,
+				D90740BCC518788DFF10C2C3 /* SessionListViewModel.swift */,
 				4E534253809626A251479F36 /* WalletViewModel.swift */,
 			);
 			path = ViewModels;
@@ -148,6 +160,7 @@
 		5CBCCF5A233A52C28036BFB6 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				DBC5E12AD36D63E209377A34 /* ChatView.swift */,
 				52B73ABA466C984C16A73BAC /* Widgets */,
 			);
 			path = Chat;
@@ -186,6 +199,8 @@
 		B535A9DB78F6BB8F541795E4 /* SessionList */ = {
 			isa = PBXGroup;
 			children = (
+				2C2497B51D128FE47B87A02A /* SessionListView.swift */,
+				DFE415F2BF2A582E0ECD8468 /* SessionRowView.swift */,
 			);
 			path = SessionList;
 			sourceTree = "<group>";
@@ -325,12 +340,17 @@
 				87CB42683B8E577B73EF5ABD /* AuthViewModel.swift in Sources */,
 				341EC89C9A1CBCE64A79AB97 /* ChatContent.swift in Sources */,
 				7201FB723FF942F8D900244C /* ChatMessage.swift in Sources */,
+				EAFF2ED18EEF50E91A046491 /* ChatView.swift in Sources */,
 				D3C50C0051FAB515C300999A /* JSONValue.swift in Sources */,
 				AE1343BB6CD0FDCD061F6522 /* KeychainService.swift in Sources */,
 				F3BCF75960819DF9DBA0DD74 /* ParaWalletService.swift in Sources */,
 				96BCC4541314930A78AFE589 /* PersistedChatSession.swift in Sources */,
+				B5135F0379063FD82EE8879E /* SessionListView.swift in Sources */,
+				E5CDE7C1625DF3A32BDD6676 /* SessionListViewModel.swift in Sources */,
+				9BA9401E63DFD4673C043453 /* SessionRowView.swift in Sources */,
 				21713526ED0EDCA31C94F0C5 /* ToolUseCard.swift in Sources */,
 				505DD62606464921D60EAF28 /* WalletEntry.swift in Sources */,
+				C0F08EF94A8C0DF920E039B1 /* WalletManagementSheet.swift in Sources */,
 				53310A991F5AFEB1C9D771C0 /* WalletViewModel.swift in Sources */,
 				15D77BBF1ADD7EB62A76AEB3 /* WidgetPayload.swift in Sources */,
 			);
