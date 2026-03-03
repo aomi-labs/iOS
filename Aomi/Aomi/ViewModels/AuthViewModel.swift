@@ -11,9 +11,18 @@ final class AuthViewModel {
     var authState: AuthState?
 
     private let walletService: ParaWalletService
+    private let authorizationController: AuthorizationController
+    private let webAuthenticationSession: WebAuthenticationSession
 
-    init(walletService: ParaWalletService) {
+    init(walletService: ParaWalletService,
+         authorizationController: AuthorizationController,
+         webAuthenticationSession: WebAuthenticationSession) {
         self.walletService = walletService
+        self.authorizationController = authorizationController
+        self.webAuthenticationSession = webAuthenticationSession
+
+        // Set default web auth session on ParaManager - needed for hosted OTP webview flow
+        walletService.paraManager.setDefaultWebAuthenticationSession(webAuthenticationSession)
     }
 
     func initiateLogin(input: String) async {
@@ -25,12 +34,20 @@ final class AuthViewModel {
             let state = try await walletService.initiateAuth(input: input)
             switch state.stage {
             case .login, .done:
+                // Existing user - complete auth immediately
                 authState = state
+                try await walletService.completeAuth(
+                    authState: state,
+                    authorizationController: authorizationController,
+                    webAuthenticationSession: webAuthenticationSession
+                )
             case .verify, .signup:
+                // New user or needs OTP
                 authState = state
                 needsOTPVerification = true
             }
         } catch {
+            print("[AuthVM] initiateLogin error: \(error)")
             errorMessage = error.localizedDescription
         }
     }
@@ -43,43 +60,14 @@ final class AuthViewModel {
         do {
             let verifiedState = try await walletService.handleVerification(code: code)
             authState = verifiedState
+
+            // Complete authentication (signup/login + wallet creation)
+            try await walletService.completeAuth(
+                authState: verifiedState,
+                authorizationController: authorizationController,
+                webAuthenticationSession: webAuthenticationSession
+            )
             return true
-        } catch {
-            errorMessage = error.localizedDescription
-            return false
-        }
-    }
-
-    func completeAuth(authorizationController: AuthorizationController) async -> Bool {
-        guard let authState else { return false }
-        isLoading = true
-        defer { isLoading = false }
-
-        do {
-            switch authState.stage {
-            case .signup:
-                try await walletService.handleSignup(
-                    authState: authState,
-                    authorizationController: authorizationController
-                )
-            case .login:
-                try await walletService.handleLogin(
-                    authState: authState,
-                    authorizationController: authorizationController
-                )
-            case .done:
-                break
-            case .verify:
-                errorMessage = "Unexpected state"
-                return false
-            }
-
-            try await walletService.fetchWallets()
-            if walletService.wallets.isEmpty {
-                try await walletService.createWallet(type: .evm)
-            }
-            await walletService.checkAuthStatus()
-            return walletService.isLoggedIn
         } catch {
             errorMessage = error.localizedDescription
             return false

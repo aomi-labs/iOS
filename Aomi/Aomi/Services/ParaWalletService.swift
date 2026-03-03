@@ -39,37 +39,56 @@ final class ParaWalletService {
         try await paraManager.handleVerificationCode(verificationCode: code)
     }
 
-    func handleSignup(authState: AuthState, authorizationController: AuthorizationController) async throws {
-        #if targetEnvironment(simulator)
-        try await paraManager.handleSignup(
-            authState: authState,
-            method: .password,
-            authorizationController: authorizationController
-        )
-        #else
-        try await paraManager.handleSignup(
-            authState: authState,
-            method: .passkey,
-            authorizationController: authorizationController
-        )
-        #endif
-    }
-
-    func handleLogin(authState: AuthState, authorizationController: AuthorizationController) async throws {
-        #if targetEnvironment(simulator)
-        if paraManager.isLoginMethodAvailable(method: .password, authState: authState) {
-            try await paraManager.handleLoginWithMethod(
+    func completeAuth(
+        authState: AuthState,
+        authorizationController: AuthorizationController,
+        webAuthenticationSession: WebAuthenticationSession
+    ) async throws {
+        switch authState.stage {
+        case .signup:
+            #if targetEnvironment(simulator)
+            try await paraManager.handleSignup(
                 authState: authState,
                 method: .password,
+                authorizationController: authorizationController,
+                webAuthenticationSession: webAuthenticationSession
+            )
+            #else
+            try await paraManager.handleSignup(
+                authState: authState,
+                method: .passkey,
                 authorizationController: authorizationController
             )
+            #endif
+        case .login:
+            #if targetEnvironment(simulator)
+            if paraManager.isLoginMethodAvailable(method: .password, authState: authState) {
+                try await paraManager.handleLoginWithMethod(
+                    authState: authState,
+                    method: .password,
+                    authorizationController: authorizationController,
+                    webAuthenticationSession: webAuthenticationSession
+                )
+            }
+            #else
+            try await paraManager.handleLogin(
+                authState: authState,
+                authorizationController: authorizationController
+            )
+            #endif
+        case .done:
+            break
+        case .verify:
+            throw NSError(domain: "ParaWalletService", code: -1,
+                          userInfo: [NSLocalizedDescriptionKey: "Unexpected auth stage"])
         }
-        #else
-        try await paraManager.handleLogin(
-            authState: authState,
-            authorizationController: authorizationController
-        )
-        #endif
+
+        // Post-auth: fetch wallets, create EVM wallet if none exists
+        try await fetchWallets()
+        if wallets.isEmpty {
+            try await createWallet(type: .evm)
+        }
+        await checkAuthStatus()
     }
 
     func fetchWallets() async throws {

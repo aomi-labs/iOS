@@ -41,9 +41,11 @@
 		C33C03618ADE2EF31D15D9B1 /* AssistantMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522615D8F7DA1D261DDA9E37 /* AssistantMessageView.swift */; };
 		C49F9D5DC5B8945A2D164A8C /* AuthVerifyOTPView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E0BC969E55331CA181BC0E /* AuthVerifyOTPView.swift */; };
 		CAFC54ED8F196FA2D7D112A0 /* ChatMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EA95183686752E0757722CD /* ChatMessageView.swift */; };
+		CF87247E9EBFA1BC3D21782F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A29734AED798A2300647D1C0 /* Assets.xcassets */; };
 		D2B1B12B90C13BE6913DDD99 /* APIClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFE11F3814D521FB5DE463D /* APIClientTests.swift */; };
 		D32E2E7ACA0DF7EECF72D619 /* WalletPromptCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEDC4573E7834ACB51C3397 /* WalletPromptCard.swift */; };
 		D3C50C0051FAB515C300999A /* JSONValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAFC30E410801AA54B68AE7 /* JSONValue.swift */; };
+		D939B64CAE4D498EAF4BC99C /* AuthStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8407B7DF1156CB57381A91B /* AuthStyles.swift */; };
 		DFA0B102788697CB6CF40939 /* AomiApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A9BD0CD688BDAE30FC2502 /* AomiApp.swift */; };
 		DFE638DAD2C45BB864A90E78 /* WidgetRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62208E5B76F966862CB9C02 /* WidgetRenderer.swift */; };
 		E5CDE7C1625DF3A32BDD6676 /* SessionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D90740BCC518788DFF10C2C3 /* SessionListViewModel.swift */; };
@@ -99,7 +101,10 @@
 		9D8BA0DC932549AD499D58D8 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		9F5252B5EC21F2E4C8A0A07E /* PriceChartWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceChartWidget.swift; sourceTree = "<group>"; };
 		A020D9F1094FA2867D0CD520 /* PortfolioOverviewWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioOverviewWidget.swift; sourceTree = "<group>"; };
+		A29734AED798A2300647D1C0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A7D5384524D662B9D6788880 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		A887BBBB69DC9CBCEE3EB2A1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		AEAE4B5C2C6D971CCDFD4EAA /* Aomi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Aomi.entitlements; sourceTree = "<group>"; };
 		AEE5CBFE7682DE1715FB2101 /* AddWatchAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWatchAddressView.swift; sourceTree = "<group>"; };
 		B2E8A3F5DF86C3F8991BF249 /* ParaWalletService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParaWalletService.swift; sourceTree = "<group>"; };
 		C2CDC2872FA7C26EB8CC9FF3 /* ThinkingShimmerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThinkingShimmerView.swift; sourceTree = "<group>"; };
@@ -109,6 +114,7 @@
 		D90740BCC518788DFF10C2C3 /* SessionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionListViewModel.swift; sourceTree = "<group>"; };
 		DBC5E12AD36D63E209377A34 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		DFE415F2BF2A582E0ECD8468 /* SessionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionRowView.swift; sourceTree = "<group>"; };
+		E8407B7DF1156CB57381A91B /* AuthStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStyles.swift; sourceTree = "<group>"; };
 		F60EEB39B6842B3986FDCBD7 /* ModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsTests.swift; sourceTree = "<group>"; };
 		F62208E5B76F966862CB9C02 /* WidgetRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetRenderer.swift; sourceTree = "<group>"; };
 		FDD15E2935A70E7EAB896AED /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
@@ -160,6 +166,9 @@
 		28E5FA10E5A8BD43A15B59BE /* Aomi */ = {
 			isa = PBXGroup;
 			children = (
+				AEAE4B5C2C6D971CCDFD4EAA /* Aomi.entitlements */,
+				A29734AED798A2300647D1C0 /* Assets.xcassets */,
+				A887BBBB69DC9CBCEE3EB2A1 /* Info.plist */,
 				A76E5F0C27B53503143E40D5 /* App */,
 				F33D4E6EDC0DF40EA623EF6F /* Models */,
 				70D02C38A6A6C515E3A3EDA8 /* Services */,
@@ -233,6 +242,7 @@
 			isa = PBXGroup;
 			children = (
 				5CBCCF5A233A52C28036BFB6 /* Chat */,
+				8D70061FCE812E5053E15590 /* Common */,
 				20A7DDFB472877F0389AEE11 /* Onboarding */,
 				B535A9DB78F6BB8F541795E4 /* SessionList */,
 				123B5B04825A8BE7496D3F70 /* Wallet */,
@@ -248,6 +258,14 @@
 				B2E8A3F5DF86C3F8991BF249 /* ParaWalletService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		8D70061FCE812E5053E15590 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				E8407B7DF1156CB57381A91B /* AuthStyles.swift */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 		A76E5F0C27B53503143E40D5 /* App */ = {
@@ -325,6 +343,7 @@
 			buildConfigurationList = 7C9D3EEFF0F8DFCABCB793D5 /* Build configuration list for PBXNativeTarget "Aomi" */;
 			buildPhases = (
 				87D400EDF670133BF2143268 /* Sources */,
+				46335F0BCDB613E3B710EC20 /* Resources */,
 				B1EBF662B44A4FE9A86CEBC4 /* Frameworks */,
 			);
 			buildRules = (
@@ -350,10 +369,10 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					8FD980B3E6F1081805FD196F = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = KXSWJN7WY8;
 					};
 					97D8F11F443FA1A02583907C = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = KXSWJN7WY8;
 					};
 				};
 			};
@@ -381,6 +400,17 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		46335F0BCDB613E3B710EC20 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF87247E9EBFA1BC3D21782F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		5A6B2D861E6208C243E92EB3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -403,6 +433,7 @@
 				3E1744AC6F9A743205AA8204 /* AppConfig.swift in Sources */,
 				C33C03618ADE2EF31D15D9B1 /* AssistantMessageView.swift in Sources */,
 				B91EACDB34522BFB00DF5B6D /* AuthLoginView.swift in Sources */,
+				D939B64CAE4D498EAF4BC99C /* AuthStyles.swift in Sources */,
 				C49F9D5DC5B8945A2D164A8C /* AuthVerifyOTPView.swift in Sources */,
 				87CB42683B8E577B73EF5ABD /* AuthViewModel.swift in Sources */,
 				341EC89C9A1CBCE64A79AB97 /* ChatContent.swift in Sources */,
@@ -486,7 +517,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = KXSWJN7WY8;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -543,7 +574,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = KXSWJN7WY8;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -610,17 +641,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				CODE_SIGN_ENTITLEMENTS = Aomi/Aomi.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = Aomi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.aomi.Aomi;
+				PROVISIONING_PROFILE_SPECIFIER = "Aomi Dist";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -630,16 +661,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Aomi/Aomi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = Aomi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.aomi.Aomi;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

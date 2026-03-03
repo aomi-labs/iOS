@@ -60,14 +60,6 @@ struct APIUserState: Codable, Sendable {
     let ensName: String?
     let pendingTransactions: [APIPendingTransaction]
 
-    enum CodingKeys: String, CodingKey {
-        case address
-        case chainId = "chain_id"
-        case isConnected = "is_connected"
-        case ensName = "ens_name"
-        case pendingTransactions = "pending_transactions"
-    }
-
     init(address: String? = nil, chainId: UInt64? = nil, isConnected: Bool = false, ensName: String? = nil, pendingTransactions: [APIPendingTransaction] = []) {
         self.address = address
         self.chainId = chainId

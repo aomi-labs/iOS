@@ -1,13 +1,9 @@
 import Foundation
 
 enum AppConfig {
-    #if DEBUG
-    static let apiBaseURL = "http://localhost:8080"
-    #else
-    static let apiBaseURL = "https://aomi.dev"
-    #endif
+    static let apiBaseURL = "https://api.aomi.dev"
 
     static let paraEnvironment = "beta"
-    static let paraAPIKey = "" // Set via KeychainService or replace with your Para API key
+    static let paraAPIKey = "beta_33cd6bc9e2f0cb0725a1a35b11bd99b4"
     static let paraAppScheme = "aomi"
 }
