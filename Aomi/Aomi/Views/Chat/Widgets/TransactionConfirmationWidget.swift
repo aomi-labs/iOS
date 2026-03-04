@@ -1,10 +1,15 @@
+import BigInt
+import ParaSwift
 import SwiftUI
 
 struct TransactionConfirmationWidget: View {
     let data: JSONValue
     @Environment(ParaWalletService.self) private var walletService
+    @Environment(AomiAPIClient.self) private var apiClient
     @State private var isSigning = false
     @State private var result: TransactionResult?
+    @State private var txHash: String?
+    @State private var statusMessage: String?
     @State private var hasAppeared = false
 
     var body: some View {
@@ -28,22 +33,32 @@ struct TransactionConfirmationWidget: View {
             }
             .font(.subheadline)
 
-            // Actions
+            // Result state
             if let result {
-                Label(
-                    result == .signed ? "Signed" : "Rejected",
-                    systemImage: result == .signed ? "checkmark.circle.fill" : "xmark.circle.fill"
-                )
-                .foregroundStyle(result == .signed ? .green : .red)
-                .font(.subheadline.bold())
+                VStack(alignment: .leading, spacing: 4) {
+                    Label(
+                        result.label,
+                        systemImage: result.icon
+                    )
+                    .foregroundStyle(result.color)
+                    .font(.subheadline.bold())
+
+                    if let txHash {
+                        Text(truncate(txHash))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    if let statusMessage {
+                        Text(statusMessage)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
                 .transition(.scale.combined(with: .opacity))
             } else {
                 HStack(spacing: 12) {
                     Button {
-                        HapticEngine.transactionRejected()
-                        withAnimation(.spring(duration: 0.3)) {
-                            result = .rejected
-                        }
+                        rejectTransaction()
                     } label: {
                         Text("Reject")
                             .frame(maxWidth: .infinity)
@@ -52,13 +67,13 @@ struct TransactionConfirmationWidget: View {
 
                     Button {
                         HapticEngine.mediumTap()
-                        signTransaction()
+                        signAndBroadcast()
                     } label: {
                         if isSigning {
                             ProgressView()
                                 .frame(maxWidth: .infinity)
                         } else {
-                            Text("Sign")
+                            Text("Sign & Send")
                                 .frame(maxWidth: .infinity)
                         }
                     }
@@ -84,33 +99,101 @@ struct TransactionConfirmationWidget: View {
         .animation(.spring(duration: 0.3), value: result != nil)
     }
 
-    private func signTransaction() {
-        guard let walletId = walletService.wallets.first(where: { $0.type == .evm })?.id,
-              let message = data["sign_data"]?.stringValue else { return }
+    private func rejectTransaction() {
+        HapticEngine.transactionRejected()
+        withAnimation(.spring(duration: 0.3)) {
+            result = .rejected
+        }
+        reportResult(txHash: nil, status: "rejected")
+    }
+
+    private func signAndBroadcast() {
+        guard let walletId = walletService.wallets.first(where: { $0.type == .evm })?.id else { return }
+
+        let txTo = data["to"]?.stringValue
+        let txValue = parseBigUInt(data["value"]?.stringValue)
+        let txData = data["data"]?.stringValue
+        let txGas = parseBigUInt(data["gas"]?.stringValue)
+        let txChainId = data["chain_id"]?.stringValue ?? "1"
+        let chainIdInt = Int(txChainId) ?? 1
+
+        let transaction = EVMTransaction(
+            to: txTo,
+            value: txValue ?? BigUInt(0),
+            gasLimit: txGas,
+            smartContractByteCode: txData,
+            type: 2
+        )
+
         isSigning = true
+        statusMessage = "Signing..."
+
         Task {
             do {
-                _ = try await walletService.signMessage(walletId: walletId, message: message)
+                // Step 1: Sign via Para SDK
+                let signedTx = try await walletService.signTransaction(
+                    walletId: walletId,
+                    transaction: transaction,
+                    chainId: txChainId
+                )
+
+                // Step 2: Broadcast via RPC
+                statusMessage = "Broadcasting..."
+                let rpcURL = ChainConfig.rpcURL(for: chainIdInt)
+                let hash = try await EthereumRPC.sendRawTransaction(signedTx: signedTx, rpcURL: rpcURL)
+
+                txHash = hash
                 HapticEngine.transactionSigned()
                 withAnimation(.spring(duration: 0.3)) {
-                    result = .signed
+                    result = .broadcast
                 }
+
+                // Step 3: Report success to backend
+                reportResult(txHash: hash, status: "success")
+
             } catch {
                 HapticEngine.error()
+                statusMessage = error.localizedDescription
                 withAnimation(.spring(duration: 0.3)) {
-                    result = .rejected
+                    result = .failed
                 }
+                reportResult(txHash: nil, status: "failed")
             }
             isSigning = false
         }
     }
 
+    private func reportResult(txHash: String?, status: String) {
+        let payload: [String: Any] = [
+            "type": "wallet:tx_complete",
+            "payload": [
+                "txHash": txHash ?? "",
+                "status": status
+            ]
+        ]
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: payload),
+              let jsonString = String(data: jsonData, encoding: .utf8) else { return }
+
+        Task {
+            try? await apiClient.postSystemMessage(jsonString)
+            NotificationCenter.default.post(name: .transactionCompleted, object: nil)
+        }
+    }
+
+    private func parseBigUInt(_ string: String?) -> BigUInt? {
+        guard let string, !string.isEmpty else { return nil }
+        if string.hasPrefix("0x") {
+            return BigUInt(String(string.dropFirst(2)), radix: 16)
+        }
+        return BigUInt(string)
+    }
+
     private var description: String { data["description"]?.stringValue ?? "" }
-    private var from: String { data["from"]?.stringValue ?? "" }
+    private var from: String { data["from"]?.stringValue ?? walletService.primaryAddress ?? "" }
     private var to: String { data["to"]?.stringValue ?? "" }
     private var value: String { data["value"]?.stringValue ?? "0" }
-    private var gas: String { data["gas"]?.stringValue ?? "" }
-    private var chain: String { data["chain"]?.stringValue ?? "" }
+    private var gas: String { data["gas"]?.stringValue ?? "Estimated at signing" }
+    private var chain: String { data["chain"]?.stringValue ?? data["chain_name"]?.stringValue ?? "ethereum" }
 
     private func truncate(_ address: String) -> String {
         guard address.count > 10 else { return address }
@@ -128,6 +211,34 @@ struct TransactionConfirmationWidget: View {
     }
 
     enum TransactionResult {
-        case signed, rejected
+        case broadcast, rejected, failed
+
+        var label: String {
+            switch self {
+            case .broadcast: "Broadcast"
+            case .rejected: "Rejected"
+            case .failed: "Failed"
+            }
+        }
+
+        var icon: String {
+            switch self {
+            case .broadcast: "checkmark.circle.fill"
+            case .rejected: "xmark.circle.fill"
+            case .failed: "exclamationmark.triangle.fill"
+            }
+        }
+
+        var color: Color {
+            switch self {
+            case .broadcast: .green
+            case .rejected: .red
+            case .failed: .red
+            }
+        }
     }
+}
+
+extension Notification.Name {
+    static let transactionCompleted = Notification.Name("transactionCompleted")
 }

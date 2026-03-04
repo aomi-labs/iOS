@@ -5,6 +5,7 @@ struct WalletRowView: View {
     let chain: String
     let label: String?
     let badge: String
+    @State private var showCopied = false
 
     var body: some View {
         HStack {
@@ -13,9 +14,26 @@ struct WalletRowView: View {
                     Text(label)
                         .font(.subheadline.bold())
                 }
-                Text(truncatedAddress)
-                    .font(.system(.caption, design: .monospaced))
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 6) {
+                    Text(truncatedAddress)
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundStyle(.secondary)
+                    Button {
+                        UIPasteboard.general.string = address
+                        HapticEngine.lightTap()
+                        showCopied = true
+                        Task {
+                            try? await Task.sleep(for: .seconds(1.5))
+                            showCopied = false
+                        }
+                    } label: {
+                        Image(systemName: showCopied ? "checkmark" : "doc.on.doc")
+                            .font(.caption2)
+                            .foregroundStyle(showCopied ? .green : .secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .animation(.easeInOut(duration: 0.2), value: showCopied)
+                }
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 4) {

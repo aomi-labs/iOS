@@ -90,6 +90,22 @@ struct APIPendingTransaction: Codable, Sendable, Identifiable {
     }
 }
 
+struct WalletTxRequest: Identifiable, Equatable {
+    let id: String
+    let to: String
+    let value: String?
+    let data: String?
+    let chainId: Int
+
+    init(id: String = UUID().uuidString, to: String, value: String? = nil, data: String? = nil, chainId: Int = 1) {
+        self.id = id
+        self.to = to
+        self.value = value
+        self.data = data
+        self.chainId = chainId
+    }
+}
+
 struct APISessionItem: Codable, Sendable, Identifiable {
     let sessionId: String
     let title: String?

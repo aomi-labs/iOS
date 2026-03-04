@@ -82,6 +82,18 @@ final class AomiAPIClient {
         try await executeVoid(request)
     }
 
+    // MARK: - System
+
+    func postSystemMessage(_ message: String) async throws {
+        guard let sessionId else { throw APIError.noSession }
+        var components = URLComponents(string: "\(baseURL)/api/system")!
+        components.queryItems = [URLQueryItem(name: "message", value: message)]
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "POST"
+        request.setValue(sessionId, forHTTPHeaderField: "X-Session-Id")
+        try await executeVoid(request)
+    }
+
     // MARK: - Wallet
 
     func bindWallet(address: String, platform: String, platformUserId: String) async throws {

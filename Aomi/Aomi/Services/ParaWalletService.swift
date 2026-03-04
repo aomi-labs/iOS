@@ -105,6 +105,15 @@ final class ParaWalletService {
         return result.signedTransaction
     }
 
+    func signTransaction(walletId: String, transaction: EVMTransaction, chainId: String) async throws -> String {
+        let result = try await paraManager.signTransaction(
+            walletId: walletId,
+            transaction: transaction,
+            chainId: chainId
+        )
+        return result.signedTransaction
+    }
+
     var primaryAddress: String? {
         wallets.first(where: { $0.type == .evm })?.address
     }
