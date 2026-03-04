@@ -9,12 +9,15 @@ final class ChatViewModel {
     var isStreaming = false
     var activeToolLabel: String?
     var currentAssistantMessageId: UUID?
+    var generatedTitle: String?
 
     let sessionId: String
     private let apiClient: AomiAPIClient
     private let walletService: ParaWalletService
     private var pollTask: Task<Void, Never>?
     private var lastMessageCount = 0
+    private var hasGeneratedTitle = false
+    private let titleGenerator = SessionTitleGenerator()
 
     init(sessionId: String, apiClient: AomiAPIClient, walletService: ParaWalletService) {
         self.sessionId = sessionId
@@ -52,6 +55,8 @@ final class ChatViewModel {
                     processResponse(state)
                     if !state.isProcessing { break }
                 }
+                // Generate title after first complete response
+                await generateTitleIfNeeded()
             } catch {
                 if !Task.isCancelled {
                     let errorMsg = ChatMessage(role: .system, content: [.error(error.localizedDescription)])
@@ -78,6 +83,32 @@ final class ChatViewModel {
             processResponse(response)
         } catch {
             // No history available
+        }
+    }
+
+    // MARK: - Title Generation
+
+    private func generateTitleIfNeeded() async {
+        guard !hasGeneratedTitle else { return }
+
+        let userMessages = messages.filter { $0.role == .user }
+        let assistantMessages = messages.filter { $0.role == .assistant }
+        guard let firstUser = userMessages.first,
+              let firstAssistant = assistantMessages.first else { return }
+
+        hasGeneratedTitle = true
+
+        let userText = firstUser.textContent
+        let assistantText = firstAssistant.textContent
+        guard !userText.isEmpty, !assistantText.isEmpty else { return }
+
+        if let title = await titleGenerator.generateTitle(
+            sessionId: sessionId,
+            userMessage: userText,
+            assistantResponse: assistantText
+        ) {
+            generatedTitle = title
+            try? await apiClient.renameSession(sessionId: sessionId, title: title)
         }
     }
 

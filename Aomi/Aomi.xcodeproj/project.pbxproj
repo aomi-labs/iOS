@@ -26,6 +26,7 @@
 		5806880FBD8ECDDF21B38E3B /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD15E2935A70E7EAB896AED /* WelcomeView.swift */; };
 		657E9C59B2AF46D88F60D728 /* WalletRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6A91F32294508655F86B82 /* WalletRowView.swift */; };
 		6735D894AF6DE70720845274 /* AddWatchAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE5CBFE7682DE1715FB2101 /* AddWatchAddressView.swift */; };
+		6C3E54B0587B231A0682588B /* SessionTitleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160AF96384F3F5CEC89ABFDD /* SessionTitleGenerator.swift */; };
 		6DCC064B0B56274D6373F00D /* TokenBalanceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DB4DA24E27865E13AB95C5 /* TokenBalanceWidget.swift */; };
 		7201FB723FF942F8D900244C /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8BA0DC932549AD499D58D8 /* ChatMessage.swift */; };
 		87CB42683B8E577B73EF5ABD /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8C53A03937DD105B2CE9DF /* AuthViewModel.swift */; };
@@ -72,6 +73,7 @@
 		0A6A91F32294508655F86B82 /* WalletRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletRowView.swift; sourceTree = "<group>"; };
 		0AEDC4573E7834ACB51C3397 /* WalletPromptCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletPromptCard.swift; sourceTree = "<group>"; };
 		0C27F1872770AD702CDF932B /* ToolUseCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolUseCard.swift; sourceTree = "<group>"; };
+		160AF96384F3F5CEC89ABFDD /* SessionTitleGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTitleGenerator.swift; sourceTree = "<group>"; };
 		1E0E62D1E2C95E7A429562F4 /* WidgetPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPayload.swift; sourceTree = "<group>"; };
 		26F8AE1EDEA366839225E904 /* DeFiPositionDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeFiPositionDetailSheet.swift; sourceTree = "<group>"; };
 		27448EFCEA2C2C13F227215E /* AomiTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AomiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -256,6 +258,7 @@
 				7D0AF2161DFA9F066F6C5FD2 /* AomiAPIClient.swift */,
 				9CC963B6EA11D1ECE299176A /* KeychainService.swift */,
 				B2E8A3F5DF86C3F8991BF249 /* ParaWalletService.swift */,
+				160AF96384F3F5CEC89ABFDD /* SessionTitleGenerator.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -453,6 +456,7 @@
 				B5135F0379063FD82EE8879E /* SessionListView.swift in Sources */,
 				E5CDE7C1625DF3A32BDD6676 /* SessionListViewModel.swift in Sources */,
 				9BA9401E63DFD4673C043453 /* SessionRowView.swift in Sources */,
+				6C3E54B0587B231A0682588B /* SessionTitleGenerator.swift in Sources */,
 				BBADD60A65694A470D8ECD21 /* ThinkingShimmerView.swift in Sources */,
 				6DCC064B0B56274D6373F00D /* TokenBalanceWidget.swift in Sources */,
 				459D7F54B749315A487B2A3F /* ToolDetailSheet.swift in Sources */,
@@ -528,7 +532,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -591,7 +595,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;

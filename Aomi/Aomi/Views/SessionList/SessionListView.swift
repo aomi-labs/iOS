@@ -41,7 +41,9 @@ struct SessionListView: View {
                 }
             }
             .navigationDestination(item: $selectedSessionId) { sessionId in
-                ChatView(sessionId: sessionId)
+                ChatView(sessionId: sessionId) { title in
+                    viewModel?.updateSessionTitle(id: sessionId, title: title)
+                }
             }
             .sheet(isPresented: $showWalletSheet) {
                 WalletManagementSheet()

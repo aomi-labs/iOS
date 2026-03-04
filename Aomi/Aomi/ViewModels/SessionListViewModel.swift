@@ -30,6 +30,12 @@ final class SessionListViewModel {
         return sessionId
     }
 
+    func updateSessionTitle(id: String, title: String) {
+        if let index = sessions.firstIndex(where: { $0.id == id }) {
+            sessions[index].title = title
+        }
+    }
+
     func archiveSession(id: String) async {
         sessions.removeAll { $0.id == id }
         try? await apiClient.archiveSession(sessionId: id)

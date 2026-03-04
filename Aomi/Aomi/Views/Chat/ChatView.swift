@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ChatView: View {
     let sessionId: String
+    var onTitleGenerated: ((String) -> Void)?
     @Environment(AomiAPIClient.self) private var apiClient
     @Environment(ParaWalletService.self) private var walletService
     @Environment(\.modelContext) private var modelContext
@@ -26,6 +27,11 @@ struct ChatView: View {
             viewModel = vm
             vm.loadDraft(modelContext: modelContext)
             await vm.loadHistory()
+        }
+        .onChange(of: viewModel?.generatedTitle) { _, newTitle in
+            if let newTitle {
+                onTitleGenerated?(newTitle)
+            }
         }
     }
 
