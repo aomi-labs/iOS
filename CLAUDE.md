@@ -110,6 +110,3 @@ Bump `CURRENT_PROJECT_VERSION` in `project.yml` before each TestFlight upload.
 - App Store Connect app ID: `6759941797`
 - ASC API key: `USGX44AVW6` (stored in system keychain via `asc` CLI)
 
-## Reference Implementation
-
-Alpha_ai iOS app at `/Users/zakimanian/code/alpha_ai/alpha_ai_mobile/iOS-app/` serves as reference for Para SDK integration patterns. Key file: `AuthenticationViewModel.swift`.
