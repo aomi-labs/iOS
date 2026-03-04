@@ -24,6 +24,7 @@
 		4C47ECF66E79F7F2FAC7FCFA /* DeFiPositionWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5511105A37E45C941A4DC138 /* DeFiPositionWidget.swift */; };
 		505DD62606464921D60EAF28 /* WalletEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C02E15750A42C5D5EA22EC5 /* WalletEntry.swift */; };
 		53310A991F5AFEB1C9D771C0 /* WalletViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E534253809626A251479F36 /* WalletViewModel.swift */; };
+		558B359D6329261BA4103A65 /* ENSResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = E698AC1DC554812893AA4DD9 /* ENSResolver.swift */; };
 		5806880FBD8ECDDF21B38E3B /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD15E2935A70E7EAB896AED /* WelcomeView.swift */; };
 		657E9C59B2AF46D88F60D728 /* WalletRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6A91F32294508655F86B82 /* WalletRowView.swift */; };
 		6735D894AF6DE70720845274 /* AddWatchAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE5CBFE7682DE1715FB2101 /* AddWatchAddressView.swift */; };
@@ -118,6 +119,7 @@
 		D90740BCC518788DFF10C2C3 /* SessionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionListViewModel.swift; sourceTree = "<group>"; };
 		DBC5E12AD36D63E209377A34 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		DFE415F2BF2A582E0ECD8468 /* SessionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionRowView.swift; sourceTree = "<group>"; };
+		E698AC1DC554812893AA4DD9 /* ENSResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ENSResolver.swift; sourceTree = "<group>"; };
 		E8407B7DF1156CB57381A91B /* AuthStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStyles.swift; sourceTree = "<group>"; };
 		F60EEB39B6842B3986FDCBD7 /* ModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsTests.swift; sourceTree = "<group>"; };
 		F62208E5B76F966862CB9C02 /* WidgetRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetRenderer.swift; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 			isa = PBXGroup;
 			children = (
 				7D0AF2161DFA9F066F6C5FD2 /* AomiAPIClient.swift */,
+				E698AC1DC554812893AA4DD9 /* ENSResolver.swift */,
 				4F2FDE6A2B3809481BDF4BB7 /* HapticEngine.swift */,
 				9CC963B6EA11D1ECE299176A /* KeychainService.swift */,
 				B2E8A3F5DF86C3F8991BF249 /* ParaWalletService.swift */,
@@ -450,6 +453,7 @@
 				392BD704ED742F7889B257A9 /* ChatViewModel.swift in Sources */,
 				217AEE1E61F0A7F48B0D8D35 /* DeFiPositionDetailSheet.swift in Sources */,
 				4C47ECF66E79F7F2FAC7FCFA /* DeFiPositionWidget.swift in Sources */,
+				558B359D6329261BA4103A65 /* ENSResolver.swift in Sources */,
 				41068DF1A3AB4BB3A4B55744 /* HapticEngine.swift in Sources */,
 				D3C50C0051FAB515C300999A /* JSONValue.swift in Sources */,
 				AE1343BB6CD0FDCD061F6522 /* KeychainService.swift in Sources */,
