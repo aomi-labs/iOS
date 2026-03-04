@@ -218,6 +218,7 @@ struct WalletManagementSheet: View {
     }
 
     private func selectWallet(address: String) {
+        HapticEngine.walletSelected()
         apiClient.publicKey = address
         UserDefaults.standard.set(address, forKey: "activeWalletAddress")
     }

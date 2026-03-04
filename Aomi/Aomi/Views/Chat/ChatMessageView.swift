@@ -24,7 +24,7 @@ struct ChatMessageView: View {
                     .foregroundStyle(.secondary)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)
-                    .background(.ultraThinMaterial, in: Capsule())
+                    .glassEffect(.regular, in: .capsule)
             }
             Spacer()
         }

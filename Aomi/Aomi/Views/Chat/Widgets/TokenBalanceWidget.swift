@@ -3,6 +3,7 @@ import SwiftUI
 
 struct TokenBalanceWidget: View {
     let data: JSONValue
+    @State private var hasAppeared = false
 
     var body: some View {
         HStack(spacing: 12) {
@@ -29,7 +30,14 @@ struct TokenBalanceWidget: View {
             }
         }
         .padding()
-        .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 16))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 16))
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.96)
+        .onAppear {
+            withAnimation(.spring(duration: 0.4, bounce: 0.12)) {
+                hasAppeared = true
+            }
+        }
     }
 
     private var symbol: String { data["symbol"]?.stringValue ?? "" }

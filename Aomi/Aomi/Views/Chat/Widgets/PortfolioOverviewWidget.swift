@@ -4,6 +4,7 @@ import SwiftUI
 struct PortfolioOverviewWidget: View {
     let data: JSONValue
     @State private var selectedToken: String?
+    @State private var hasAppeared = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -19,10 +20,10 @@ struct PortfolioOverviewWidget: View {
             // Token list
             ForEach(tokens, id: \.symbol) { token in
                 Button {
+                    HapticEngine.lightTap()
                     selectedToken = token.symbol
                 } label: {
                     HStack(spacing: 10) {
-                        // Token icon placeholder
                         Circle().fill(Color(.systemGray4))
                             .frame(width: 24, height: 24)
 
@@ -35,7 +36,6 @@ struct PortfolioOverviewWidget: View {
                                 .foregroundStyle(.secondary)
                         }
                         Spacer()
-                        // Sparkline
                         if !token.sparkline.isEmpty {
                             Chart {
                                 ForEach(Array(token.sparkline.enumerated()), id: \.offset) { i, val in
@@ -60,11 +60,18 @@ struct PortfolioOverviewWidget: View {
             }
         }
         .padding()
-        .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 16))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 16))
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.96)
+        .onAppear {
+            withAnimation(.spring(duration: 0.4, bounce: 0.12)) {
+                hasAppeared = true
+            }
+        }
         .sheet(item: $selectedToken) { symbol in
-            // Show price chart detail for selected token
             if let token = tokens.first(where: { $0.symbol == symbol }) {
                 PriceChartDetailSheet(tokenSymbol: token.symbol, sparkline: token.sparkline)
+                    .onAppear { HapticEngine.sheetPresented() }
             }
         }
     }

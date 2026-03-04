@@ -5,6 +5,7 @@ struct AssistantMessageView: View {
     let message: ChatMessage
     var isStreaming: Bool = false
     @State private var selectedToolCard: ToolUseCard?
+    @State private var hasAppeared = false
 
     var body: some View {
         HStack(alignment: .top) {
@@ -16,7 +17,7 @@ struct AssistantMessageView: View {
                             .textSelection(.enabled)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 10)
-                            .background(Color(.systemGray5), in: RoundedRectangle(cornerRadius: 16))
+                            .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 16))
 
                     case .toolUse(let card):
                         if card.result != nil {
@@ -34,14 +35,25 @@ struct AssistantMessageView: View {
                             .font(.caption)
                             .foregroundStyle(.red)
                             .padding(10)
-                            .background(Color.red.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
+                            .glassEffect(.regular.tint(.red.opacity(0.3)), in: RoundedRectangle(cornerRadius: 12))
                     }
                 }
             }
             Spacer(minLength: 60)
         }
+        .opacity(hasAppeared ? 1 : 0)
+        .offset(y: hasAppeared ? 0 : 12)
+        .onAppear {
+            if !hasAppeared {
+                HapticEngine.messageReceived()
+                withAnimation(.spring(duration: 0.35, bounce: 0.15)) {
+                    hasAppeared = true
+                }
+            }
+        }
         .sheet(item: $selectedToolCard) { card in
             ToolDetailSheet(card: card)
+                .onAppear { HapticEngine.sheetPresented() }
         }
     }
 }

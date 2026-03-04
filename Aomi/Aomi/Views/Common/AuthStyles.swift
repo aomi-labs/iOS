@@ -31,36 +31,37 @@ struct AomiButtonStyle: ButtonStyle {
             .foregroundColor(isEnabled ? .white : AomiColors.labelTertiary)
             .frame(maxWidth: .infinity)
             .frame(height: 56)
-            .background(
-                ZStack {
+            .background {
+                if isEnabled {
                     RoundedRectangle(cornerRadius: 28)
-                        .fill(.ultraThinMaterial)
-
+                        .fill(AomiColors.accent.opacity(0.85))
+                } else {
                     RoundedRectangle(cornerRadius: 28)
-                        .fill(
-                            isEnabled
-                                ? AomiColors.accent.opacity(0.85)
-                                : AomiColors.fillTertiary
-                        )
-
-                    RoundedRectangle(cornerRadius: 28)
-                        .strokeBorder(
-                            LinearGradient(
-                                colors: [
-                                    Color.white.opacity(0.25),
-                                    Color.white.opacity(0.08),
-                                    Color.white.opacity(0.03)
-                                ],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            ),
-                            lineWidth: 0.5
-                        )
+                        .fill(AomiColors.fillTertiary)
                 }
+            }
+            .glassEffect(
+                isEnabled ? .regular.tint(.accentColor) : .regular,
+                in: RoundedRectangle(cornerRadius: 28)
             )
-            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .overlay(
+                RoundedRectangle(cornerRadius: 28)
+                    .strokeBorder(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(0.3),
+                                Color.white.opacity(0.08),
+                                Color.white.opacity(0.02),
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ),
+                        lineWidth: 0.5
+                    )
+            )
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
             .opacity(configuration.isPressed ? 0.9 : 1.0)
-            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+            .animation(.spring(duration: 0.2, bounce: 0.3), value: configuration.isPressed)
     }
 }
 
@@ -84,18 +85,15 @@ struct AomiBorderTextField: View {
             .focused($isFocused)
             .padding(.horizontal, 20)
             .frame(height: 56)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(AomiColors.backgroundSecondary)
-            )
+            .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 16))
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
                     .strokeBorder(
-                        isFocused ? AomiColors.accent : AomiColors.separator,
-                        lineWidth: isFocused ? 2 : 1
+                        isFocused ? AomiColors.accent : Color.clear,
+                        lineWidth: isFocused ? 2 : 0
                     )
             )
-            .animation(.easeInOut(duration: 0.2), value: isFocused)
+            .animation(.spring(duration: 0.25, bounce: 0.2), value: isFocused)
     }
 }
 
@@ -109,7 +107,8 @@ struct AuthSegmentedControl: View {
         HStack(spacing: 0) {
             ForEach(options.indices, id: \.self) { index in
                 Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
+                    HapticEngine.selectionTick()
+                    withAnimation(.spring(duration: 0.25, bounce: 0.15)) {
                         selectedIndex = index
                     }
                 } label: {
@@ -122,20 +121,17 @@ struct AuthSegmentedControl: View {
                         )
                         .frame(maxWidth: .infinity)
                         .frame(height: 36)
-                        .background(
-                            selectedIndex == index
-                                ? RoundedRectangle(cornerRadius: 8)
+                        .background {
+                            if selectedIndex == index {
+                                RoundedRectangle(cornerRadius: 8)
                                     .fill(AomiColors.backgroundSecondary)
-                                : nil
-                        )
+                            }
+                        }
                 }
             }
         }
         .padding(4)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(AomiColors.fillTertiary)
-        )
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 12))
     }
 }
 
@@ -150,17 +146,16 @@ struct OTPDigitBox: View {
             .font(.system(size: 24, weight: .semibold, design: .monospaced))
             .foregroundColor(AomiColors.labelPrimary)
             .frame(width: 48, height: 56)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(AomiColors.backgroundSecondary)
-            )
+            .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 12))
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
                     .strokeBorder(
-                        isFocused ? AomiColors.accent : AomiColors.separator,
-                        lineWidth: isFocused ? 2 : 1
+                        isFocused ? AomiColors.accent : Color.clear,
+                        lineWidth: isFocused ? 2 : 0
                     )
             )
+            .scaleEffect(digit.isEmpty ? 1.0 : 1.05)
+            .animation(.spring(duration: 0.2, bounce: 0.3), value: digit)
     }
 }
 
@@ -171,7 +166,10 @@ struct ResendOTPButton: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            HapticEngine.lightTap()
+            action()
+        } label: {
             if remainingSeconds > 0 {
                 Text("Resend in \(remainingSeconds)s")
                     .font(.system(size: 15, weight: .medium))

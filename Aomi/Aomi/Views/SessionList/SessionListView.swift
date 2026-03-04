@@ -20,6 +20,7 @@ struct SessionListView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
+                        HapticEngine.lightTap()
                         showWalletSheet = true
                     } label: {
                         if let address = apiClient.publicKey {
@@ -32,6 +33,7 @@ struct SessionListView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        HapticEngine.sessionCreated()
                         guard let viewModel else { return }
                         let id = viewModel.createNewSession()
                         selectedSessionId = id
@@ -47,6 +49,7 @@ struct SessionListView: View {
             }
             .sheet(isPresented: $showWalletSheet) {
                 WalletManagementSheet()
+                    .onAppear { HapticEngine.sheetPresented() }
             }
         }
         .task {
@@ -70,6 +73,7 @@ struct SessionListView: View {
                     SessionRowView(session: session)
                         .contentShape(Rectangle())
                         .onTapGesture {
+                            HapticEngine.lightTap()
                             selectedSessionId = session.id
                         }
                 }

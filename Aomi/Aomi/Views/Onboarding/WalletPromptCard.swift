@@ -17,17 +17,23 @@ struct WalletPromptCard: View {
                 .foregroundStyle(.secondary)
 
             HStack(spacing: 12) {
-                Button("Create Wallet") { onCreateWallet() }
-                    .buttonStyle(.borderedProminent)
-                Button("Add Address") { onAddWatch() }
-                    .buttonStyle(.bordered)
+                Button("Create Wallet") {
+                    HapticEngine.buttonTap()
+                    onCreateWallet()
+                }
+                .buttonStyle(.borderedProminent)
+                Button("Add Address") {
+                    HapticEngine.buttonTap()
+                    onAddWatch()
+                }
+                .buttonStyle(.bordered)
             }
         }
         .padding()
-        .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 16))
+        .glassEffect(.regular.tint(.orange.opacity(0.1)), in: RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .strokeBorder(Color.orange.opacity(0.3), lineWidth: 1)
+                .strokeBorder(Color.orange.opacity(0.2), lineWidth: 0.5)
         )
     }
 }

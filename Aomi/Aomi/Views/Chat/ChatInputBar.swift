@@ -12,33 +12,44 @@ struct ChatInputBar: View {
     }
 
     var body: some View {
-        HStack(spacing: 12) {
-            TextField("Message aomi...", text: $text, axis: .vertical)
-                .focused(isFocused)
-                .lineLimit(1...5)
-                .textFieldStyle(.plain)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
-                .frame(minHeight: 36)
-                .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 20))
+        GlassEffectContainer {
+            HStack(spacing: 12) {
+                TextField("Message aomi...", text: $text, axis: .vertical)
+                    .focused(isFocused)
+                    .lineLimit(1...5)
+                    .textFieldStyle(.plain)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .frame(minHeight: 36)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
 
-            if isStreaming {
-                Button(action: onInterrupt) {
-                    Image(systemName: "stop.circle.fill")
-                        .font(.title2)
-                        .foregroundStyle(.red)
+                if isStreaming {
+                    Button {
+                        HapticEngine.lightTap()
+                        onInterrupt()
+                    } label: {
+                        Image(systemName: "stop.circle.fill")
+                            .font(.title2)
+                            .foregroundStyle(.red)
+                    }
+                    .glassEffect(.regular.interactive(), in: .circle)
+                    .transition(.scale.combined(with: .opacity))
                 }
-            }
 
-            Button(action: onSend) {
-                Image(systemName: "arrow.up.circle.fill")
-                    .font(.title2)
-                    .foregroundStyle(isEmpty ? .gray : Color.accentColor)
+                Button {
+                    HapticEngine.messageSent()
+                    onSend()
+                } label: {
+                    Image(systemName: "arrow.up.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(isEmpty ? .gray : Color.accentColor)
+                }
+                .disabled(isEmpty)
             }
-            .disabled(isEmpty)
+            .padding(.horizontal)
+            .padding(.vertical, 8)
         }
-        .padding(.horizontal)
-        .padding(.vertical, 8)
         .background(.bar)
+        .animation(.spring(duration: 0.3), value: isStreaming)
     }
 }

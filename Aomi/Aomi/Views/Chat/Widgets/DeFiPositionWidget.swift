@@ -3,9 +3,13 @@ import SwiftUI
 struct DeFiPositionWidget: View {
     let data: JSONValue
     @State private var showDetail = false
+    @State private var hasAppeared = false
 
     var body: some View {
-        Button { showDetail = true } label: {
+        Button {
+            HapticEngine.lightTap()
+            showDetail = true
+        } label: {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(protocolName)
@@ -27,12 +31,20 @@ struct DeFiPositionWidget: View {
                     .foregroundStyle(.tertiary)
             }
             .padding()
-            .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 16))
+            .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 16))
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.96)
+        .onAppear {
+            withAnimation(.spring(duration: 0.4, bounce: 0.12)) {
+                hasAppeared = true
+            }
+        }
         .sheet(isPresented: $showDetail) {
             DeFiPositionDetailSheet(data: data)
+                .onAppear { HapticEngine.sheetPresented() }
         }
     }
 
