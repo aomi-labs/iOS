@@ -32,6 +32,8 @@ struct DeFiPositionDetailSheet: View {
                             .chartXAxis(.hidden)
                             .frame(height: 160)
                         }
+                        .padding()
+                        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 12))
                     }
 
                     // Key metrics
@@ -46,6 +48,8 @@ struct DeFiPositionDetailSheet: View {
                         metricRow("Health Factor", data["health_factor"]?.stringValue)
                         metricRow("Liquidation Price", data["liquidation_price"]?.stringValue)
                     }
+                    .padding()
+                    .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 12))
 
                     // Composition
                     if case .array(let tokens) = data["composition"] {
@@ -66,6 +70,8 @@ struct DeFiPositionDetailSheet: View {
                                 }
                             }
                         }
+                        .padding()
+                        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 12))
                     }
                 }
                 .padding()

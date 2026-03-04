@@ -26,8 +26,10 @@ struct WalletRowView: View {
                     .font(.caption2)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(
-                        badge == "signing" ? Color.green.opacity(0.15) : Color.gray.opacity(0.15),
+                    .glassEffect(
+                        badge == "signing"
+                            ? .regular.tint(.green.opacity(0.3))
+                            : .regular,
                         in: Capsule()
                     )
                     .foregroundStyle(badge == "signing" ? .green : .secondary)
@@ -36,6 +38,7 @@ struct WalletRowView: View {
         .padding(.vertical, 2)
         .contextMenu {
             Button("Copy Address", systemImage: "doc.on.doc") {
+                HapticEngine.lightTap()
                 UIPasteboard.general.string = address
             }
         }

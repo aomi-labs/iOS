@@ -178,6 +178,7 @@ struct AuthLoginView: View {
 
     private func handleContinue() {
         guard let authVM else { return }
+        HapticEngine.buttonTap()
         isLoading = true
         errorMessage = ""
 
@@ -186,10 +187,13 @@ struct AuthLoginView: View {
         Task {
             await authVM.initiateLogin(input: input)
             if authVM.needsOTPVerification {
+                HapticEngine.success()
                 showOTP = true
             } else if authVM.errorMessage.isEmpty {
+                HapticEngine.success()
                 isLoggedIn = true
             } else {
+                HapticEngine.error()
                 errorMessage = authVM.errorMessage
             }
             isLoading = false

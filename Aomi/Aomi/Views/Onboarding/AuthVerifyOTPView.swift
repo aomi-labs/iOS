@@ -113,14 +113,19 @@ struct AuthVerifyOTPView: View {
                 .textContentType(.oneTimeCode)
                 .focused($isInputFocused)
                 .opacity(0)
-                .onChange(of: otpCode) { _, newValue in
+                .onChange(of: otpCode) { oldValue, newValue in
                     // Limit to 6 digits, filter non-digits
                     let filtered = String(newValue.filter { $0.isNumber }.prefix(otpLength))
                     if filtered != newValue {
                         otpCode = filtered
                     }
+                    // Haptic on each digit entered
+                    if filtered.count > oldValue.count {
+                        HapticEngine.otpDigitEntered()
+                    }
                     // Auto-verify when 6 digits entered
                     if otpCode.count == otpLength {
+                        HapticEngine.otpComplete()
                         handleVerify()
                     }
                 }
@@ -183,14 +188,17 @@ struct AuthVerifyOTPView: View {
 
     private func handleVerify() {
         guard otpCode.count == otpLength, !isVerifying else { return }
+        HapticEngine.buttonTap()
         isVerifying = true
         isInputFocused = false
 
         Task {
             let success = await authVM.verifyOTP(code: otpCode)
             if success {
+                HapticEngine.success()
                 isLoggedIn = true
             } else {
+                HapticEngine.error()
                 otpCode = ""
                 isInputFocused = true
             }

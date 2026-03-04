@@ -18,6 +18,7 @@
 		392BD704ED742F7889B257A9 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D5384524D662B9D6788880 /* ChatViewModel.swift */; };
 		3E1744AC6F9A743205AA8204 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D4DCFF657482DD3FE507CC4 /* AppConfig.swift */; };
 		3F9E00CDF490657E3905EA7A /* PriceChartWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5252B5EC21F2E4C8A0A07E /* PriceChartWidget.swift */; };
+		41068DF1A3AB4BB3A4B55744 /* HapticEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2FDE6A2B3809481BDF4BB7 /* HapticEngine.swift */; };
 		44274DD2938265D67CEC57FB /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = B18EF27C0031907FFA251AB6 /* MarkdownUI */; };
 		459D7F54B749315A487B2A3F /* ToolDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E018890150D2C4E5DC4E24 /* ToolDetailSheet.swift */; };
 		4C47ECF66E79F7F2FAC7FCFA /* DeFiPositionWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5511105A37E45C941A4DC138 /* DeFiPositionWidget.swift */; };
@@ -84,6 +85,7 @@
 		3BFE11F3814D521FB5DE463D /* APIClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientTests.swift; sourceTree = "<group>"; };
 		3C02E15750A42C5D5EA22EC5 /* WalletEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletEntry.swift; sourceTree = "<group>"; };
 		4E534253809626A251479F36 /* WalletViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletViewModel.swift; sourceTree = "<group>"; };
+		4F2FDE6A2B3809481BDF4BB7 /* HapticEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticEngine.swift; sourceTree = "<group>"; };
 		4F8C53A03937DD105B2CE9DF /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		522615D8F7DA1D261DDA9E37 /* AssistantMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistantMessageView.swift; sourceTree = "<group>"; };
 		5511105A37E45C941A4DC138 /* DeFiPositionWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeFiPositionWidget.swift; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 			isa = PBXGroup;
 			children = (
 				7D0AF2161DFA9F066F6C5FD2 /* AomiAPIClient.swift */,
+				4F2FDE6A2B3809481BDF4BB7 /* HapticEngine.swift */,
 				9CC963B6EA11D1ECE299176A /* KeychainService.swift */,
 				B2E8A3F5DF86C3F8991BF249 /* ParaWalletService.swift */,
 				160AF96384F3F5CEC89ABFDD /* SessionTitleGenerator.swift */,
@@ -447,6 +450,7 @@
 				392BD704ED742F7889B257A9 /* ChatViewModel.swift in Sources */,
 				217AEE1E61F0A7F48B0D8D35 /* DeFiPositionDetailSheet.swift in Sources */,
 				4C47ECF66E79F7F2FAC7FCFA /* DeFiPositionWidget.swift in Sources */,
+				41068DF1A3AB4BB3A4B55744 /* HapticEngine.swift in Sources */,
 				D3C50C0051FAB515C300999A /* JSONValue.swift in Sources */,
 				AE1343BB6CD0FDCD061F6522 /* KeychainService.swift in Sources */,
 				F3BCF75960819DF9DBA0DD74 /* ParaWalletService.swift in Sources */,

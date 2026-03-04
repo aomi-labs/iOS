@@ -5,6 +5,7 @@ struct PriceChartWidget: View {
     let data: JSONValue
     @State private var selectedPeriod = "1W"
     @State private var selectedIndex: Int?
+    @State private var hasAppeared = false
 
     private let periods = ["1D", "1W", "1M", "1Y"]
 
@@ -16,6 +17,7 @@ struct PriceChartWidget: View {
                 Spacer()
                 Text(selectedIndex.map { String(format: "$%.2f", chartData[$0]) } ?? currentPrice)
                     .font(.title3.bold())
+                    .contentTransition(.numericText())
             }
 
             Chart {
@@ -44,9 +46,13 @@ struct PriceChartWidget: View {
             .frame(height: 160)
 
             // Period selector
-            HStack {
-                ForEach(periods, id: \.self) { period in
-                    Button(period) { selectedPeriod = period }
+            GlassEffectContainer {
+                HStack {
+                    ForEach(periods, id: \.self) { period in
+                        Button(period) {
+                            HapticEngine.selectionTick()
+                            selectedPeriod = period
+                        }
                         .font(.caption.bold())
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
@@ -55,11 +61,19 @@ struct PriceChartWidget: View {
                             in: Capsule()
                         )
                         .foregroundStyle(selectedPeriod == period ? .primary : .secondary)
+                    }
                 }
             }
         }
         .padding()
-        .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 16))
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 16))
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.96)
+        .onAppear {
+            withAnimation(.spring(duration: 0.4, bounce: 0.12)) {
+                hasAppeared = true
+            }
+        }
     }
 
     private var symbol: String { data["symbol"]?.stringValue ?? "" }

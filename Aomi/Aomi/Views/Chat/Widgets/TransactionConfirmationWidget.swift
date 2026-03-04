@@ -5,6 +5,7 @@ struct TransactionConfirmationWidget: View {
     @Environment(ParaWalletService.self) private var walletService
     @State private var isSigning = false
     @State private var result: TransactionResult?
+    @State private var hasAppeared = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -35,14 +36,22 @@ struct TransactionConfirmationWidget: View {
                 )
                 .foregroundStyle(result == .signed ? .green : .red)
                 .font(.subheadline.bold())
+                .transition(.scale.combined(with: .opacity))
             } else {
                 HStack(spacing: 12) {
-                    Button("Reject") {
-                        result = .rejected
+                    Button {
+                        HapticEngine.transactionRejected()
+                        withAnimation(.spring(duration: 0.3)) {
+                            result = .rejected
+                        }
+                    } label: {
+                        Text("Reject")
+                            .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.bordered)
 
                     Button {
+                        HapticEngine.mediumTap()
                         signTransaction()
                     } label: {
                         if isSigning {
@@ -59,11 +68,20 @@ struct TransactionConfirmationWidget: View {
             }
         }
         .padding()
-        .background(Color(.systemGray6), in: RoundedRectangle(cornerRadius: 16))
+        .glassEffect(.regular.tint(.orange.opacity(0.15)), in: RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .strokeBorder(Color.orange.opacity(0.3), lineWidth: 1)
+                .strokeBorder(Color.orange.opacity(0.25), lineWidth: 0.5)
         )
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.96)
+        .onAppear {
+            HapticEngine.warning()
+            withAnimation(.spring(duration: 0.4, bounce: 0.12)) {
+                hasAppeared = true
+            }
+        }
+        .animation(.spring(duration: 0.3), value: result != nil)
     }
 
     private func signTransaction() {
@@ -73,9 +91,15 @@ struct TransactionConfirmationWidget: View {
         Task {
             do {
                 _ = try await walletService.signMessage(walletId: walletId, message: message)
-                result = .signed
+                HapticEngine.transactionSigned()
+                withAnimation(.spring(duration: 0.3)) {
+                    result = .signed
+                }
             } catch {
-                result = .rejected
+                HapticEngine.error()
+                withAnimation(.spring(duration: 0.3)) {
+                    result = .rejected
+                }
             }
             isSigning = false
         }

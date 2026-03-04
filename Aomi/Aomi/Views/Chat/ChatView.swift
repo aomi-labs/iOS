@@ -50,16 +50,24 @@ struct ChatView: View {
                     }
                     if vm.isStreaming {
                         ThinkingShimmerView(label: vm.activeToolLabel ?? "Thinking...")
-                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                            .transition(
+                                .asymmetric(
+                                    insertion: .scale(scale: 0.9).combined(with: .opacity),
+                                    removal: .scale(scale: 0.95).combined(with: .opacity)
+                                )
+                            )
                     }
                     Color.clear.frame(height: 1).id("bottom")
                 }
                 .padding()
+                .animation(.spring(duration: 0.4, bounce: 0.1), value: vm.isStreaming)
             }
             .defaultScrollAnchor(.bottom)
             .scrollDismissesKeyboard(.interactively)
             .onChange(of: vm.messages.count) {
-                proxy.scrollTo("bottom")
+                withAnimation(.spring(duration: 0.3)) {
+                    proxy.scrollTo("bottom")
+                }
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {

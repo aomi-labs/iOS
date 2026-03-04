@@ -3,10 +3,27 @@ import SwiftUI
 struct ThinkingShimmerView: View {
     let label: String
     @State private var shimmerOffset: CGFloat = -1
+    @State private var wavePhase: CGFloat = 0
+    @State private var hasAppeared = false
+
+    private let dotCount = 3
+    private let dotSize: CGFloat = 5
+    private let dotSpacing: CGFloat = 6
 
     var body: some View {
-        HStack(spacing: 8) {
-            PulsingDot()
+        HStack(spacing: 10) {
+            // Breathing wave dots
+            HStack(spacing: dotSpacing) {
+                ForEach(0..<dotCount, id: \.self) { index in
+                    BreathingDot(
+                        phase: wavePhase,
+                        index: index,
+                        size: dotSize
+                    )
+                }
+            }
+
+            // Shimmer label
             Text(label)
                 .font(.caption)
                 .foregroundStyle(.secondary)
@@ -19,12 +36,26 @@ struct ThinkingShimmerView: View {
                         .lineLimit(1)
                         .truncationMode(.tail)
                 )
-                .animation(.easeInOut(duration: 0.2), value: label)
+                .contentTransition(.numericText())
+                .animation(.easeInOut(duration: 0.25), value: label)
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 6)
+        .padding(.vertical, 8)
+        .glassEffect(.regular, in: .capsule)
+        .opacity(hasAppeared ? 1 : 0)
+        .scaleEffect(hasAppeared ? 1 : 0.9)
         .onAppear {
-            withAnimation(.linear(duration: 2).repeatForever(autoreverses: false)) {
+            HapticEngine.thinkingStarted()
+
+            withAnimation(.easeOut(duration: 0.35)) {
+                hasAppeared = true
+            }
+
+            withAnimation(.linear(duration: 1.8).repeatForever(autoreverses: false)) {
+                wavePhase = .pi * 2
+            }
+
+            withAnimation(.linear(duration: 2.5).repeatForever(autoreverses: false)) {
                 shimmerOffset = 2
             }
         }
@@ -33,29 +64,37 @@ struct ThinkingShimmerView: View {
     private var shimmerGradient: some View {
         GeometryReader { geo in
             LinearGradient(
-                colors: [.clear, .white.opacity(0.4), .clear],
+                colors: [.clear, .white.opacity(0.5), .clear],
                 startPoint: .leading,
                 endPoint: .trailing
             )
-            .frame(width: geo.size.width * 0.4)
+            .frame(width: geo.size.width * 0.35)
             .offset(x: geo.size.width * shimmerOffset)
         }
     }
 }
 
-private struct PulsingDot: View {
-    @State private var isAnimating = false
+// MARK: - Breathing Dot
+
+private struct BreathingDot: View {
+    let phase: CGFloat
+    let index: Int
+    let size: CGFloat
+
+    private var phaseOffset: CGFloat {
+        CGFloat(index) * (.pi * 2 / 3)
+    }
+
+    private var progress: CGFloat {
+        (sin(phase + phaseOffset) + 1) / 2 // 0...1
+    }
 
     var body: some View {
         Circle()
-            .fill(Color.accentColor)
-            .frame(width: 6, height: 6)
-            .scaleEffect(isAnimating ? 1.3 : 0.8)
-            .opacity(isAnimating ? 1 : 0.5)
-            .onAppear {
-                withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
-                    isAnimating = true
-                }
-            }
+            .fill(Color.accentColor.opacity(0.4 + progress * 0.6))
+            .frame(width: size, height: size)
+            .scaleEffect(0.7 + progress * 0.5)
+            .offset(y: -progress * 3)
+            .shadow(color: .accentColor.opacity(progress * 0.4), radius: progress * 4)
     }
 }

@@ -28,6 +28,9 @@ struct ToolDetailSheet: View {
                         Text(card.input.prettyString)
                             .font(.system(.caption, design: .monospaced))
                             .textSelection(.enabled)
+                            .padding(10)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 8))
                     }
 
                     // Output
@@ -39,6 +42,9 @@ struct ToolDetailSheet: View {
                             Text(result.displayContent)
                                 .font(.system(.caption, design: .monospaced))
                                 .textSelection(.enabled)
+                                .padding(10)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 8))
                         }
                     }
                 }

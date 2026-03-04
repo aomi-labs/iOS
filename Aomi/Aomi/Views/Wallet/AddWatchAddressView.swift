@@ -31,6 +31,7 @@ struct AddWatchAddressView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
+                        HapticEngine.success()
                         onAdd(address, chain, label.isEmpty ? nil : label)
                         dismiss()
                     }
