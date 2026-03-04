@@ -24,7 +24,9 @@ final class ChatViewModel {
         self.apiClient = apiClient
         self.walletService = walletService
         apiClient.sessionId = sessionId
-        apiClient.publicKey = walletService.primaryAddress
+        if apiClient.publicKey == nil {
+            apiClient.publicKey = walletService.primaryAddress
+        }
     }
 
     func sendMessage() {
@@ -178,7 +180,7 @@ final class ChatViewModel {
 
     private func buildUserState() -> APIUserState {
         APIUserState(
-            address: walletService.primaryAddress,
+            address: apiClient.publicKey,
             chainId: 1,
             isConnected: walletService.isLoggedIn,
             ensName: nil
