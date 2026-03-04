@@ -47,7 +47,9 @@ struct SessionListView: View {
                     viewModel?.updateSessionTitle(id: sessionId, title: title)
                 }
             }
-            .sheet(isPresented: $showWalletSheet) {
+            .sheet(isPresented: $showWalletSheet, onDismiss: {
+                Task { await viewModel?.loadSessions() }
+            }) {
                 WalletManagementSheet()
                     .onAppear { HapticEngine.sheetPresented() }
             }
@@ -55,6 +57,12 @@ struct SessionListView: View {
         .task {
             let vm = SessionListViewModel(apiClient: apiClient)
             viewModel = vm
+            // Wait for publicKey to be restored before fetching sessions
+            // (AomiApp.task restores wallet state concurrently)
+            for _ in 0..<20 {
+                if apiClient.publicKey != nil { break }
+                try? await Task.sleep(for: .milliseconds(100))
+            }
             await vm.loadSessions()
         }
     }

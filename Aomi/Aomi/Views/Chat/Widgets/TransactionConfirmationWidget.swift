@@ -113,24 +113,39 @@ struct TransactionConfirmationWidget: View {
         let txTo = data["to"]?.stringValue
         let txValue = parseBigUInt(data["value"]?.stringValue)
         let txData = data["data"]?.stringValue
-        let txGas = parseBigUInt(data["gas"]?.stringValue)
         let txChainId = data["chain_id"]?.stringValue ?? "1"
         let chainIdInt = Int(txChainId) ?? 1
-
-        let transaction = EVMTransaction(
-            to: txTo,
-            value: txValue ?? BigUInt(0),
-            gasLimit: txGas,
-            smartContractByteCode: txData,
-            type: 2
-        )
+        let fromAddress = data["from"]?.stringValue ?? walletService.primaryAddress
 
         isSigning = true
-        statusMessage = "Signing..."
+        statusMessage = "Estimating gas..."
 
         Task {
             do {
+                let rpcURL = ChainConfig.rpcURL(for: chainIdInt)
+
+                // Step 0: Estimate gas from the RPC node
+                let gasHex = try await EthereumRPC.estimateGas(
+                    to: txTo,
+                    from: fromAddress,
+                    value: data["value"]?.stringValue,
+                    data: txData,
+                    rpcURL: rpcURL
+                )
+                // Add 20% buffer to estimate
+                let estimatedGas = parseHexUInt64(gasHex)
+                let bufferedGas = BigUInt(estimatedGas) * 120 / 100
+
+                let transaction = EVMTransaction(
+                    to: txTo,
+                    value: txValue ?? BigUInt(0),
+                    gasLimit: bufferedGas,
+                    smartContractByteCode: txData,
+                    type: 2
+                )
+
                 // Step 1: Sign via Para SDK
+                statusMessage = "Signing..."
                 let signedTx = try await walletService.signTransaction(
                     walletId: walletId,
                     transaction: transaction,
@@ -139,7 +154,6 @@ struct TransactionConfirmationWidget: View {
 
                 // Step 2: Broadcast via RPC
                 statusMessage = "Broadcasting..."
-                let rpcURL = ChainConfig.rpcURL(for: chainIdInt)
                 let hash = try await EthereumRPC.sendRawTransaction(signedTx: signedTx, rpcURL: rpcURL)
 
                 txHash = hash
@@ -178,6 +192,11 @@ struct TransactionConfirmationWidget: View {
             try? await apiClient.postSystemMessage(jsonString)
             NotificationCenter.default.post(name: .transactionCompleted, object: nil)
         }
+    }
+
+    private func parseHexUInt64(_ hex: String) -> UInt64 {
+        let stripped = hex.hasPrefix("0x") ? String(hex.dropFirst(2)) : hex
+        return UInt64(stripped, radix: 16) ?? 21000
     }
 
     private func parseBigUInt(_ string: String?) -> BigUInt? {

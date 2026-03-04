@@ -201,11 +201,23 @@ final class ChatViewModel {
             let txRequest = WalletTxRequest(to: to, value: value, data: data, chainId: chainIdNum)
             pendingWalletRequests.append(txRequest)
 
-            // Inject a widget message into the chat
-            let widgetData = buildTxWidgetData(payload: payload, chainId: chainIdNum)
-            let widget = WidgetPayload(widgetType: WidgetPayload.transactionConfirmation, data: widgetData)
-            let widgetMsg = ChatMessage(role: .assistant, content: [.widget(widget)])
-            messages.append(widgetMsg)
+            // Only inject a widget if the tool_result path didn't already render one
+            let alreadyRendered = messages.contains { msg in
+                msg.content.contains { content in
+                    if case .widget(let w) = content,
+                       w.widgetType == WidgetPayload.transactionConfirmation,
+                       w.data["to"]?.stringValue == to {
+                        return true
+                    }
+                    return false
+                }
+            }
+            if !alreadyRendered {
+                let widgetData = buildTxWidgetData(payload: payload, chainId: chainIdNum)
+                let widget = WidgetPayload(widgetType: WidgetPayload.transactionConfirmation, data: widgetData)
+                let widgetMsg = ChatMessage(role: .assistant, content: [.widget(widget)])
+                messages.append(widgetMsg)
+            }
         }
     }
 
