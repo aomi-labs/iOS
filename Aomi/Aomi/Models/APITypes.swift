@@ -106,6 +106,65 @@ struct WalletTxRequest: Identifiable, Equatable {
     }
 }
 
+struct APIModelInfo: Codable, Sendable, Identifiable {
+    let rig: String
+    var id: String { rig }
+
+    enum CodingKeys: String, CodingKey {
+        case rig
+    }
+
+    init(rig: String) {
+        self.rig = rig
+    }
+
+    init(from decoder: Decoder) throws {
+        if let container = try? decoder.singleValueContainer(),
+           let rig = try? container.decode(String.self) {
+            self.rig = rig
+            return
+        }
+
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        rig = try container.decode(String.self, forKey: .rig)
+    }
+}
+
+struct APINamespace: Codable, Sendable, Identifiable {
+    let name: String
+    var id: String { name }
+
+    enum CodingKeys: String, CodingKey {
+        case name
+    }
+
+    init(name: String) {
+        self.name = name
+    }
+
+    init(from decoder: Decoder) throws {
+        if let container = try? decoder.singleValueContainer(),
+           let name = try? container.decode(String.self) {
+            self.name = name
+            return
+        }
+
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+    }
+}
+
+struct APIEvent: Codable, Sendable, Identifiable {
+    let id: String
+    let type: String
+    let timestamp: String
+    let data: JSONValue
+
+    enum CodingKeys: String, CodingKey {
+        case id, type, timestamp, data
+    }
+}
+
 struct APISessionItem: Codable, Sendable, Identifiable {
     let sessionId: String
     let title: String?

@@ -11,6 +11,7 @@ actor ENSResolver {
     // Well-known function selectors
     private let resolverSelector = "0178b8bf" // keccak256("resolver(bytes32)")[:4]
     private let addrSelector = "3b3b57de"     // keccak256("addr(bytes32)")[:4]
+    private let nameSelector = "691f3431"     // keccak256("name(bytes32)")[:4]
 
     static func looksLikeENS(_ input: String) -> Bool {
         let trimmed = input.trimmingCharacters(in: .whitespaces).lowercased()
@@ -44,6 +45,64 @@ actor ENSResolver {
         }
 
         return Self.checksumAddress(rawAddress)
+    }
+
+    /// Reverse lookup: given an address, returns its primary ENS name (if set).
+    func reverseLookup(_ address: String) async throws -> String? {
+        let stripped = address.lowercased().hasPrefix("0x")
+            ? String(address.lowercased().dropFirst(2))
+            : address.lowercased()
+        let reverseName = "\(stripped).addr.reverse"
+        let namehash = Self.namehash(reverseName)
+
+        // Step 1: Get resolver from registry
+        let resolverCalldata = "0x" + resolverSelector + namehash
+        let resolverHex = try await ethCall(to: registryAddress, data: resolverCalldata)
+
+        guard resolverHex.count >= 40 else { return nil }
+        let resolverAddress = "0x" + resolverHex.suffix(40)
+        guard resolverAddress != "0x0000000000000000000000000000000000000000" else {
+            return nil
+        }
+
+        // Step 2: Call name(bytes32) on the resolver
+        let nameCalldata = "0x" + nameSelector + namehash
+        let nameHex = try await ethCall(to: resolverAddress, data: nameCalldata)
+
+        return Self.decodeABIString(nameHex)
+    }
+
+    /// Decode an ABI-encoded string from hex (offset + length + data).
+    static func decodeABIString(_ hex: String) -> String? {
+        // ABI encoding: 32 bytes offset + 32 bytes length + data
+        guard hex.count >= 128 else { return nil }
+
+        let lengthStart = hex.index(hex.startIndex, offsetBy: 64)
+        let lengthEnd = hex.index(lengthStart, offsetBy: 64)
+        let lengthHex = String(hex[lengthStart..<lengthEnd])
+        guard let length = UInt64(lengthHex, radix: 16), length > 0, length < 256 else { return nil }
+
+        let dataStart = lengthEnd
+        let dataCharCount = Int(length) * 2
+        guard hex.count >= 128 + dataCharCount else { return nil }
+        let dataEnd = hex.index(dataStart, offsetBy: dataCharCount)
+        let dataHex = String(hex[dataStart..<dataEnd])
+
+        // Convert hex to bytes
+        var bytes: [UInt8] = []
+        var i = dataHex.startIndex
+        while i < dataHex.endIndex {
+            let next = dataHex.index(i, offsetBy: 2)
+            if let byte = UInt8(dataHex[i..<next], radix: 16) {
+                bytes.append(byte)
+            }
+            i = next
+        }
+
+        let name = String(bytes: bytes, encoding: .utf8)
+        // Verify it looks like a valid ENS name
+        guard let name, name.contains("."), !name.isEmpty else { return nil }
+        return name
     }
 
     // MARK: - Namehash (EIP-137)

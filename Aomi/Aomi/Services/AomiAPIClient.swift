@@ -6,6 +6,8 @@ final class AomiAPIClient {
     let baseURL: String
     var sessionId: String?
     var publicKey: String?
+    var ensName: String?
+    var pendingTransactions: [APIPendingTransaction] = []
 
     init(baseURL: String = AppConfig.apiBaseURL) {
         self.baseURL = baseURL
@@ -73,6 +75,20 @@ final class AomiAPIClient {
         try await executeVoid(request)
     }
 
+    func deleteSession(sessionId: String) async throws {
+        var request = URLRequest(url: URL(string: "\(baseURL)/api/sessions/\(sessionId)")!)
+        request.httpMethod = "DELETE"
+        request.setValue(sessionId, forHTTPHeaderField: "X-Session-Id")
+        try await executeVoid(request)
+    }
+
+    func unarchiveSession(sessionId: String) async throws {
+        var request = URLRequest(url: URL(string: "\(baseURL)/api/sessions/\(sessionId)/unarchive")!)
+        request.httpMethod = "POST"
+        request.setValue(sessionId, forHTTPHeaderField: "X-Session-Id")
+        try await executeVoid(request)
+    }
+
     func renameSession(sessionId: String, title: String) async throws {
         var request = URLRequest(url: URL(string: "\(baseURL)/api/sessions/\(sessionId)")!)
         request.httpMethod = "PATCH"
@@ -80,6 +96,55 @@ final class AomiAPIClient {
         request.setValue(sessionId, forHTTPHeaderField: "X-Session-Id")
         request.httpBody = try JSONEncoder().encode(["title": title])
         try await executeVoid(request)
+    }
+
+    // MARK: - SSE Streaming
+
+    func streamUpdates(userState: APIUserState? = nil) -> AsyncThrowingStream<SessionResponse, Error> {
+        AsyncThrowingStream { continuation in
+            let task = Task {
+                do {
+                    guard let sessionId else { throw APIError.noSession }
+                    var components = URLComponents(string: "\(baseURL)/api/updates")!
+                    var items: [URLQueryItem] = []
+                    if let userState, let json = try? JSONEncoder().encode(userState),
+                       let str = String(data: json, encoding: .utf8) {
+                        items.append(URLQueryItem(name: "user_state", value: str))
+                    }
+                    if !items.isEmpty { components.queryItems = items }
+                    var request = URLRequest(url: components.url!)
+                    request.setValue(sessionId, forHTTPHeaderField: "X-Session-Id")
+                    request.setValue("text/event-stream", forHTTPHeaderField: "Accept")
+                    request.timeoutInterval = 300
+
+                    let (bytes, response) = try await URLSession.shared.bytes(for: request)
+                    guard let httpResponse = response as? HTTPURLResponse,
+                          (200...299).contains(httpResponse.statusCode) else {
+                        throw APIError.httpError((response as? HTTPURLResponse)?.statusCode ?? 0)
+                    }
+
+                    var dataLines: [String] = []
+                    for try await line in bytes.lines {
+                        if Task.isCancelled { break }
+                        if line.hasPrefix("data: ") {
+                            dataLines.append(String(line.dropFirst(6)))
+                        } else if line.isEmpty && !dataLines.isEmpty {
+                            // End of SSE event — concatenate multi-line data
+                            let combined = dataLines.joined(separator: "\n")
+                            dataLines.removeAll()
+                            if let data = combined.data(using: .utf8),
+                               let response = try? JSONDecoder().decode(SessionResponse.self, from: data) {
+                                continuation.yield(response)
+                            }
+                        }
+                    }
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+            continuation.onTermination = { _ in task.cancel() }
+        }
     }
 
     // MARK: - System
@@ -92,6 +157,46 @@ final class AomiAPIClient {
         request.httpMethod = "POST"
         request.setValue(sessionId, forHTTPHeaderField: "X-Session-Id")
         try await executeVoid(request)
+    }
+
+    // MARK: - Control Plane
+
+    func listModels() async throws -> [APIModelInfo] {
+        guard let sessionId else { throw APIError.noSession }
+        var request = URLRequest(url: URL(string: "\(baseURL)/api/control/models")!)
+        request.setValue(sessionId, forHTTPHeaderField: "X-Session-Id")
+        return try await execute(request)
+    }
+
+    func selectModel(rig: String, namespace: String? = nil) async throws {
+        guard let sessionId else { throw APIError.noSession }
+        var components = URLComponents(string: "\(baseURL)/api/control/model")!
+        var items: [URLQueryItem] = [URLQueryItem(name: "rig", value: rig)]
+        if let namespace { items.append(URLQueryItem(name: "namespace", value: namespace)) }
+        components.queryItems = items
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "POST"
+        request.setValue(sessionId, forHTTPHeaderField: "X-Session-Id")
+        try await executeVoid(request)
+    }
+
+    func listNamespaces() async throws -> [APINamespace] {
+        guard let sessionId else { throw APIError.noSession }
+        var request = URLRequest(url: URL(string: "\(baseURL)/api/control/namespaces")!)
+        request.setValue(sessionId, forHTTPHeaderField: "X-Session-Id")
+        return try await execute(request)
+    }
+
+    // MARK: - Events
+
+    func getEvents(count: Int = 20) async throws -> [APIEvent] {
+        var components = URLComponents(string: "\(baseURL)/api/events")!
+        var items = [URLQueryItem(name: "count", value: String(count))]
+        if let publicKey { items.append(URLQueryItem(name: "public_key", value: publicKey)) }
+        components.queryItems = items
+        var request = URLRequest(url: components.url!)
+        if let sessionId { request.setValue(sessionId, forHTTPHeaderField: "X-Session-Id") }
+        return try await execute(request)
     }
 
     // MARK: - Wallet

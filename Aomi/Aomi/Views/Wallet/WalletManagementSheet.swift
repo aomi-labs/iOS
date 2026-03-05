@@ -201,6 +201,31 @@ struct WalletManagementSheet: View {
                     }
                 }
             }
+
+            if !apiClient.pendingTransactions.isEmpty {
+                Section("Pending Transactions") {
+                    ForEach(apiClient.pendingTransactions) { tx in
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(tx.description)
+                                    .font(.subheadline)
+                                    .lineLimit(2)
+                                Text("To: \(truncateAddress(tx.to))")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Text(tx.state)
+                                .font(.caption2.bold())
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(stateColor(tx.state).opacity(0.15))
+                                .foregroundStyle(stateColor(tx.state))
+                                .clipShape(Capsule())
+                        }
+                    }
+                }
+            }
         }
         .confirmationDialog("Log out of Para?", isPresented: $showLogoutConfirmation, titleVisibility: .visible) {
             Button("Log Out", role: .destructive) {
@@ -221,6 +246,20 @@ struct WalletManagementSheet: View {
         HapticEngine.walletSelected()
         apiClient.publicKey = address
         UserDefaults.standard.set(address, forKey: "activeWalletAddress")
+    }
+
+    private func truncateAddress(_ address: String) -> String {
+        guard address.count > 10 else { return address }
+        return "\(address.prefix(6))...\(address.suffix(4))"
+    }
+
+    private func stateColor(_ state: String) -> Color {
+        switch state.lowercased() {
+        case "pending", "submitted": return .orange
+        case "confirmed", "success": return .green
+        case "failed", "error": return .red
+        default: return .secondary
+        }
     }
 
     private func createParaWallet(_ type: ParaSwift.WalletType) {

@@ -33,6 +33,7 @@
 		6C3E54B0587B231A0682588B /* SessionTitleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160AF96384F3F5CEC89ABFDD /* SessionTitleGenerator.swift */; };
 		6DCC064B0B56274D6373F00D /* TokenBalanceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DB4DA24E27865E13AB95C5 /* TokenBalanceWidget.swift */; };
 		7201FB723FF942F8D900244C /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8BA0DC932549AD499D58D8 /* ChatMessage.swift */; };
+		7AA9507423632B322A6D21BA /* ActivityFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B145485C503923470B64629 /* ActivityFeedView.swift */; };
 		87CB42683B8E577B73EF5ABD /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F8C53A03937DD105B2CE9DF /* AuthViewModel.swift */; };
 		96BCC4541314930A78AFE589 /* PersistedChatSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 819A120CE663D3A0768B77B1 /* PersistedChatSession.swift */; };
 		9BA9401E63DFD4673C043453 /* SessionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFE415F2BF2A582E0ECD8468 /* SessionRowView.swift */; };
@@ -102,6 +103,7 @@
 		7A10CC510B01A04C02B979E8 /* Aomi.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Aomi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D0AF2161DFA9F066F6C5FD2 /* AomiAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AomiAPIClient.swift; sourceTree = "<group>"; };
 		819A120CE663D3A0768B77B1 /* PersistedChatSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistedChatSession.swift; sourceTree = "<group>"; };
+		8B145485C503923470B64629 /* ActivityFeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityFeedView.swift; sourceTree = "<group>"; };
 		8BAFC30E410801AA54B68AE7 /* JSONValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONValue.swift; sourceTree = "<group>"; };
 		90E018890150D2C4E5DC4E24 /* ToolDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolDetailSheet.swift; sourceTree = "<group>"; };
 		9221814619F682AD2F819FC1 /* ChatContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatContent.swift; sourceTree = "<group>"; };
@@ -251,6 +253,7 @@
 		66CFEAF9A1312757DB11D492 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				8AB38E422AE663ADC0E3869D /* Activity */,
 				5CBCCF5A233A52C28036BFB6 /* Chat */,
 				8D70061FCE812E5053E15590 /* Common */,
 				20A7DDFB472877F0389AEE11 /* Onboarding */,
@@ -272,6 +275,14 @@
 				160AF96384F3F5CEC89ABFDD /* SessionTitleGenerator.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		8AB38E422AE663ADC0E3869D /* Activity */ = {
+			isa = PBXGroup;
+			children = (
+				8B145485C503923470B64629 /* ActivityFeedView.swift */,
+			);
+			path = Activity;
 			sourceTree = "<group>";
 		};
 		8D70061FCE812E5053E15590 /* Common */ = {
@@ -442,6 +453,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5237E7C75E9F7A24DD589F1 /* APITypes.swift in Sources */,
+				7AA9507423632B322A6D21BA /* ActivityFeedView.swift in Sources */,
 				6735D894AF6DE70720845274 /* AddWatchAddressView.swift in Sources */,
 				F08F00E35122E683D7906851 /* AomiAPIClient.swift in Sources */,
 				DFA0B102788697CB6CF40939 /* AomiApp.swift in Sources */,
@@ -663,7 +675,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Aomi/Aomi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Aomi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -684,7 +696,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Aomi/Aomi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Aomi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

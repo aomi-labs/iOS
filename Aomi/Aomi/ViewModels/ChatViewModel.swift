@@ -11,6 +11,14 @@ final class ChatViewModel {
     var currentAssistantMessageId: UUID?
     var generatedTitle: String?
     var pendingWalletRequests: [WalletTxRequest] = []
+    var availableModels: [APIModelInfo] = []
+    var availableNamespaces: [APINamespace] = []
+    var selectedModel: String? {
+        didSet { UserDefaults.standard.set(selectedModel, forKey: "selectedModel") }
+    }
+    var selectedNamespace: String? {
+        didSet { UserDefaults.standard.set(selectedNamespace, forKey: "selectedNamespace") }
+    }
     private var processedSystemEventIds: Set<String> = []
 
     let sessionId: String
@@ -29,6 +37,8 @@ final class ChatViewModel {
         if apiClient.publicKey == nil {
             apiClient.publicKey = walletService.primaryAddress
         }
+        selectedModel = UserDefaults.standard.string(forKey: "selectedModel")
+        selectedNamespace = UserDefaults.standard.string(forKey: "selectedNamespace")
         observeTransactionCompletions()
     }
 
@@ -50,15 +60,12 @@ final class ChatViewModel {
             do {
                 // Send message and get initial response
                 let userState = buildUserState()
-                let response = try await apiClient.sendMessage(text, userState: userState)
+                let response = try await apiClient.sendMessage(text, namespace: selectedNamespace, userState: userState)
                 processResponse(response)
 
-                // Poll while processing
-                while !Task.isCancelled {
-                    try await Task.sleep(for: .milliseconds(500))
-                    let state = try await apiClient.getState(userState: userState)
-                    processResponse(state)
-                    if !state.isProcessing { break }
+                // Stream or poll while processing
+                if response.isProcessing {
+                    await streamOrPoll(userState: userState)
                 }
                 // Generate title after first complete response
                 await generateTitleIfNeeded()
@@ -88,6 +95,19 @@ final class ChatViewModel {
             processResponse(response)
         } catch {
             // No history available
+        }
+    }
+
+    func loadControlPlaneOptions() async {
+        do {
+            availableModels = try await apiClient.listModels()
+        } catch {
+            // Control plane may not be available
+        }
+        do {
+            availableNamespaces = try await apiClient.listNamespaces()
+        } catch {
+            // Control plane may not be available
         }
     }
 
@@ -164,6 +184,9 @@ final class ChatViewModel {
             activeToolLabel = "Processing..."
         }
 
+        // Update pending transactions from user state, including clearing when empty.
+        apiClient.pendingTransactions = response.userState?.pendingTransactions ?? []
+
         // Process system events for wallet tx requests
         processSystemEvents(response.systemEvents)
     }
@@ -173,51 +196,59 @@ final class ChatViewModel {
             // System events have shape: {"InlineCall": {"type": "...", "payload": {...}}}
             guard let inlineCall = event["InlineCall"],
                   let type = inlineCall["type"]?.stringValue,
-                  type == "wallet_tx_request",
                   let payload = inlineCall["payload"] else {
                 continue
             }
 
-            guard let to = payload["to"]?.stringValue else { continue }
-
-            // Deduplicate using to+value+data as a fingerprint
-            let value = payload["value"]?.stringValue
-            let data = payload["data"]?.stringValue
-            let chainIdNum: Int
-            if let cid = payload["chainId"]?.numberValue {
-                chainIdNum = Int(cid)
-            } else if let cidStr = payload["chain_id"]?.stringValue, let cid = Int(cidStr) {
-                chainIdNum = cid
-            } else if let cid = payload["chain_id"]?.numberValue {
-                chainIdNum = Int(cid)
-            } else {
-                chainIdNum = 1
+            switch type {
+            case "wallet_tx_request":
+                handleWalletTxRequest(payload: payload)
+            default:
+                print("[ChatViewModel] Unknown system event type: \(type)")
             }
+        }
+    }
 
-            let fingerprint = "\(to)-\(value ?? "")-\(data ?? "")-\(chainIdNum)"
-            guard !processedSystemEventIds.contains(fingerprint) else { continue }
-            processedSystemEventIds.insert(fingerprint)
+    private func handleWalletTxRequest(payload: JSONValue) {
+        guard let to = payload["to"]?.stringValue else { return }
 
-            let txRequest = WalletTxRequest(to: to, value: value, data: data, chainId: chainIdNum)
-            pendingWalletRequests.append(txRequest)
+        // Deduplicate using to+value+data as a fingerprint
+        let value = payload["value"]?.stringValue
+        let data = payload["data"]?.stringValue
+        let chainIdNum: Int
+        if let cid = payload["chainId"]?.numberValue {
+            chainIdNum = Int(cid)
+        } else if let cidStr = payload["chain_id"]?.stringValue, let cid = Int(cidStr) {
+            chainIdNum = cid
+        } else if let cid = payload["chain_id"]?.numberValue {
+            chainIdNum = Int(cid)
+        } else {
+            chainIdNum = 1
+        }
 
-            // Only inject a widget if the tool_result path didn't already render one
-            let alreadyRendered = messages.contains { msg in
-                msg.content.contains { content in
-                    if case .widget(let w) = content,
-                       w.widgetType == WidgetPayload.transactionConfirmation,
-                       w.data["to"]?.stringValue == to {
-                        return true
-                    }
-                    return false
+        let fingerprint = "\(to)-\(value ?? "")-\(data ?? "")-\(chainIdNum)"
+        guard !processedSystemEventIds.contains(fingerprint) else { return }
+        processedSystemEventIds.insert(fingerprint)
+
+        let txRequest = WalletTxRequest(to: to, value: value, data: data, chainId: chainIdNum)
+        pendingWalletRequests.append(txRequest)
+
+        // Only inject a widget if the tool_result path didn't already render one
+        let alreadyRendered = messages.contains { msg in
+            msg.content.contains { content in
+                if case .widget(let w) = content,
+                   w.widgetType == WidgetPayload.transactionConfirmation,
+                   w.data["to"]?.stringValue == to {
+                    return true
                 }
+                return false
             }
-            if !alreadyRendered {
-                let widgetData = buildTxWidgetData(payload: payload, chainId: chainIdNum)
-                let widget = WidgetPayload(widgetType: WidgetPayload.transactionConfirmation, data: widgetData)
-                let widgetMsg = ChatMessage(role: .assistant, content: [.widget(widget)])
-                messages.append(widgetMsg)
-            }
+        }
+        if !alreadyRendered {
+            let widgetData = buildTxWidgetData(payload: payload, chainId: chainIdNum)
+            let widget = WidgetPayload(widgetType: WidgetPayload.transactionConfirmation, data: widgetData)
+            let widgetMsg = ChatMessage(role: .assistant, content: [.widget(widget)])
+            messages.append(widgetMsg)
         }
     }
 
@@ -268,7 +299,7 @@ final class ChatViewModel {
             address: apiClient.publicKey,
             chainId: 1,
             isConnected: walletService.isLoggedIn,
-            ensName: nil
+            ensName: apiClient.ensName
         )
     }
 
@@ -288,27 +319,46 @@ final class ChatViewModel {
         }
     }
 
+    private func streamOrPoll(userState: APIUserState) async {
+        // Try SSE first, fall back to polling on error
+        do {
+            for try await response in apiClient.streamUpdates(userState: userState) {
+                if Task.isCancelled { return }
+                processResponse(response)
+                if !response.isProcessing { return }
+            }
+        } catch {
+            // SSE failed, fall back to polling
+            if Task.isCancelled { return }
+            await pollUntilDone(userState: userState)
+        }
+    }
+
+    private func pollUntilDone(userState: APIUserState) async {
+        do {
+            while !Task.isCancelled {
+                try await Task.sleep(for: .milliseconds(500))
+                let state = try await apiClient.getState(userState: userState)
+                processResponse(state)
+                if !state.isProcessing { break }
+            }
+        } catch {
+            if !Task.isCancelled {
+                let errorMsg = ChatMessage(role: .system, content: [.error(error.localizedDescription)])
+                messages.append(errorMsg)
+            }
+        }
+    }
+
     private func resumePolling() {
         guard !isStreaming else { return }
         isStreaming = true
         activeToolLabel = "Processing..."
         pollTask?.cancel()
         pollTask = Task {
-            do {
-                let userState = buildUserState()
-                try await Task.sleep(for: .milliseconds(500))
-                while !Task.isCancelled {
-                    let state = try await apiClient.getState(userState: userState)
-                    processResponse(state)
-                    if !state.isProcessing { break }
-                    try await Task.sleep(for: .milliseconds(500))
-                }
-            } catch {
-                if !Task.isCancelled {
-                    let errorMsg = ChatMessage(role: .system, content: [.error(error.localizedDescription)])
-                    messages.append(errorMsg)
-                }
-            }
+            let userState = buildUserState()
+            try? await Task.sleep(for: .milliseconds(500))
+            await streamOrPoll(userState: userState)
             isStreaming = false
             activeToolLabel = nil
         }

@@ -18,6 +18,13 @@ struct ChatView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if let viewModel {
+                ToolbarItem(placement: .topBarTrailing) {
+                    controlPlaneMenu(viewModel)
+                }
+            }
+        }
         .task {
             let vm = ChatViewModel(
                 sessionId: sessionId,
@@ -27,6 +34,7 @@ struct ChatView: View {
             viewModel = vm
             vm.loadDraft(modelContext: modelContext)
             await vm.loadHistory()
+            await vm.loadControlPlaneOptions()
         }
         .onChange(of: viewModel?.generatedTitle) { _, newTitle in
             if let newTitle {
@@ -86,6 +94,50 @@ struct ChatView: View {
         }
         .onChange(of: vm.inputText) {
             vm.saveDraft(modelContext: modelContext)
+        }
+    }
+
+    @ViewBuilder
+    private func controlPlaneMenu(_ vm: ChatViewModel) -> some View {
+        let hasOptions = !vm.availableModels.isEmpty || !vm.availableNamespaces.isEmpty
+        if hasOptions {
+            Menu {
+                if !vm.availableModels.isEmpty {
+                    Section("Model") {
+                        ForEach(vm.availableModels) { model in
+                            Button {
+                                vm.selectedModel = model.rig
+                                Task { try? await apiClient.selectModel(rig: model.rig) }
+                            } label: {
+                                HStack {
+                                    Text(model.rig)
+                                    if vm.selectedModel == model.rig {
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if !vm.availableNamespaces.isEmpty {
+                    Section("Namespace") {
+                        ForEach(vm.availableNamespaces) { ns in
+                            Button {
+                                vm.selectedNamespace = ns.name
+                            } label: {
+                                HStack {
+                                    Text(ns.name)
+                                    if vm.selectedNamespace == ns.name {
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "slider.horizontal.3")
+            }
         }
     }
 }

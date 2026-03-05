@@ -5,6 +5,7 @@ import SwiftData
 @MainActor
 final class SessionListViewModel {
     var sessions: [SessionItem] = []
+    var archivedSessions: [SessionItem] = []
     var isLoading = false
 
     private let apiClient: AomiAPIClient
@@ -18,7 +19,12 @@ final class SessionListViewModel {
         defer { isLoading = false }
         do {
             let apiSessions = try await apiClient.listSessions()
-            sessions = apiSessions.map { SessionItem(id: $0.sessionId, title: $0.title) }
+            sessions = apiSessions
+                .filter { !$0.isArchived }
+                .map { SessionItem(id: $0.sessionId, title: $0.title) }
+            archivedSessions = apiSessions
+                .filter { $0.isArchived }
+                .map { SessionItem(id: $0.sessionId, title: $0.title) }
         } catch {
             // On failure, keep existing sessions
         }
@@ -37,8 +43,25 @@ final class SessionListViewModel {
     }
 
     func archiveSession(id: String) async {
-        sessions.removeAll { $0.id == id }
+        if let index = sessions.firstIndex(where: { $0.id == id }) {
+            let session = sessions.remove(at: index)
+            archivedSessions.insert(session, at: 0)
+        }
         try? await apiClient.archiveSession(sessionId: id)
+    }
+
+    func deleteSession(id: String) async {
+        sessions.removeAll { $0.id == id }
+        archivedSessions.removeAll { $0.id == id }
+        try? await apiClient.deleteSession(sessionId: id)
+    }
+
+    func unarchiveSession(id: String) async {
+        if let index = archivedSessions.firstIndex(where: { $0.id == id }) {
+            let session = archivedSessions.remove(at: index)
+            sessions.insert(session, at: 0)
+        }
+        try? await apiClient.unarchiveSession(sessionId: id)
     }
 }
 
