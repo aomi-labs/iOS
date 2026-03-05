@@ -11,11 +11,29 @@ struct SessionListView: View {
 
     var body: some View {
         NavigationStack {
-            Group {
-                if let viewModel {
-                    sessionList(viewModel)
-                } else {
-                    ProgressView()
+            VStack(spacing: 0) {
+                if walletService.wasLoggedOut {
+                    HStack {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                        Text("Para session expired. Sign in to send transactions.")
+                            .font(.caption)
+                        Spacer()
+                        Button("Sign In") {
+                            showWalletSheet = true
+                        }
+                        .font(.caption.bold())
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background(Color.orange.opacity(0.1))
+                }
+                Group {
+                    if let viewModel {
+                        sessionList(viewModel)
+                    } else {
+                        ProgressView()
+                    }
                 }
             }
             .navigationTitle("Aomi")
@@ -72,19 +90,18 @@ struct SessionListView: View {
         .task {
             let vm = SessionListViewModel(apiClient: apiClient)
             viewModel = vm
-            // Wait for publicKey to be restored before fetching sessions
-            // (AomiApp.task restores wallet state concurrently)
-            for _ in 0..<20 {
-                if apiClient.publicKey != nil { break }
-                try? await Task.sleep(for: .milliseconds(100))
-            }
             await vm.loadSessions()
             await resolveENS()
         }
         .onChange(of: apiClient.publicKey) {
             ensName = nil
             apiClient.ensName = nil
-            Task { await resolveENS() }
+            Task {
+                if apiClient.publicKey != nil {
+                    await viewModel?.loadSessions()
+                }
+                await resolveENS()
+            }
         }
     }
 

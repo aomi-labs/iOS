@@ -10,6 +10,9 @@ final class ParaWalletService {
     private(set) var isLoggedIn = false
     private(set) var wallets: [Wallet] = []
     private(set) var email: String?
+    var wasLoggedOut = false
+    private let defaults = UserDefaults.standard
+    private let hasParaSessionKey = "hasParaSession"
 
     init(environment: ParaEnvironment = .beta, apiKey: String, appScheme: String) {
         self.paraManager = ParaManager(
@@ -20,13 +23,20 @@ final class ParaWalletService {
     }
 
     func checkAuthStatus() async {
+        let wasLoggedInBefore = isLoggedIn
+        let hadParaSession = defaults.bool(forKey: hasParaSessionKey)
         do {
             isLoggedIn = try await paraManager.isFullyLoggedIn()
             if isLoggedIn {
                 email = try await paraManager.getEmail()
+                defaults.set(true, forKey: hasParaSessionKey)
+                wasLoggedOut = false
+            } else {
+                wasLoggedOut = wasLoggedInBefore || hadParaSession
             }
         } catch {
             isLoggedIn = false
+            wasLoggedOut = wasLoggedInBefore || hadParaSession
         }
     }
 
@@ -127,5 +137,7 @@ final class ParaWalletService {
         isLoggedIn = false
         email = nil
         wallets = []
+        wasLoggedOut = false
+        defaults.set(false, forKey: hasParaSessionKey)
     }
 }

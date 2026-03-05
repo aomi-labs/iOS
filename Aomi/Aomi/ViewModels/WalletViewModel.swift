@@ -58,6 +58,41 @@ final class WalletViewModel {
         modelContext.delete(entry)
         loadWatchAddresses(modelContext: modelContext)
     }
+
+    static func cacheParaWallets(_ wallets: [Wallet], modelContext: ModelContext) {
+        // Delete existing para entries
+        let descriptor = FetchDescriptor<WalletEntry>(
+            predicate: #Predicate { $0.walletType == "para" }
+        )
+        if let existing = try? modelContext.fetch(descriptor) {
+            for entry in existing {
+                modelContext.delete(entry)
+            }
+        }
+        // Insert current Para wallets
+        for wallet in wallets {
+            guard let address = wallet.address else { continue }
+            let chain: String = {
+                switch wallet.type {
+                case .evm: return "EVM"
+                case .solana: return "Solana"
+                case .cosmos: return "Cosmos"
+                case .none: return "Unknown"
+                }
+            }()
+            let entry = WalletEntry(address: address, chain: chain, label: nil, walletType: "para")
+            modelContext.insert(entry)
+        }
+        try? modelContext.save()
+    }
+
+    static func cachedParaAddresses(modelContext: ModelContext) -> [String] {
+        let descriptor = FetchDescriptor<WalletEntry>(
+            predicate: #Predicate { $0.walletType == "para" },
+            sortBy: [SortDescriptor(\.createdAt)]
+        )
+        return (try? modelContext.fetch(descriptor))?.map(\.address) ?? []
+    }
 }
 
 struct ParaWalletInfo: Identifiable {

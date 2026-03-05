@@ -67,11 +67,15 @@ struct WalletManagementSheet: View {
                     set: { newValue in
                         if newValue {
                             showLogin = false
+                            walletService.wasLoggedOut = false
                             Task {
                                 try? await walletService.fetchWallets()
                                 if let address = walletService.primaryAddress {
                                     apiClient.publicKey = address
+                                    UserDefaults.standard.set(address, forKey: "activeWalletAddress")
                                 }
+                                // Cache Para wallets after re-login
+                                WalletViewModel.cacheParaWallets(walletService.wallets, modelContext: modelContext)
                                 await viewModel?.loadWallets()
                             }
                         }
@@ -231,8 +235,16 @@ struct WalletManagementSheet: View {
             Button("Log Out", role: .destructive) {
                 Task {
                     await walletService.logout()
-                    apiClient.publicKey = nil
-                    UserDefaults.standard.removeObject(forKey: "activeWalletAddress")
+                    // Fall back to first available cached address instead of nil
+                    let watchAddresses = vm.watchAddresses
+                    let cachedParaAddresses = WalletViewModel.cachedParaAddresses(modelContext: modelContext)
+                    if let fallback = watchAddresses.first?.address ?? cachedParaAddresses.first {
+                        apiClient.publicKey = fallback
+                        UserDefaults.standard.set(fallback, forKey: "activeWalletAddress")
+                    } else {
+                        apiClient.publicKey = nil
+                        UserDefaults.standard.removeObject(forKey: "activeWalletAddress")
+                    }
                     await vm.loadWallets()
                 }
             }
