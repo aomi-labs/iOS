@@ -9,14 +9,9 @@
     <key>teamID</key>
     <string>KXSWJN7WY8</string>
     <key>signingStyle</key>
-    <string>manual</string>
+    <string>automatic</string>
     <key>signingCertificate</key>
-    <string>iPhone Distribution</string>
-    <key>provisioningProfiles</key>
-    <dict>
-        <key>io.aomi.Aomi</key>
-        <string>Aomi Dist</string>
-    </dict>
+    <string>Apple Distribution</string>
     <key>uploadSymbols</key>
     <true/>
 </dict>

@@ -21,7 +21,7 @@ struct ChatView: View {
         .toolbar {
             if let viewModel {
                 ToolbarItem(placement: .topBarTrailing) {
-                    controlPlaneMenu(viewModel)
+                    controlPlaneButton(viewModel)
                 }
             }
         }
@@ -98,46 +98,11 @@ struct ChatView: View {
     }
 
     @ViewBuilder
-    private func controlPlaneMenu(_ vm: ChatViewModel) -> some View {
-        let hasOptions = !vm.availableModels.isEmpty || !vm.availableNamespaces.isEmpty
-        if hasOptions {
-            Menu {
-                if !vm.availableModels.isEmpty {
-                    Section("Model") {
-                        ForEach(vm.availableModels) { model in
-                            Button {
-                                vm.selectedModel = model.rig
-                                Task { try? await apiClient.selectModel(rig: model.rig) }
-                            } label: {
-                                HStack {
-                                    Text(model.rig)
-                                    if vm.selectedModel == model.rig {
-                                        Image(systemName: "checkmark")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if !vm.availableNamespaces.isEmpty {
-                    Section("Namespace") {
-                        ForEach(vm.availableNamespaces) { ns in
-                            Button {
-                                vm.selectedNamespace = ns.name
-                            } label: {
-                                HStack {
-                                    Text(ns.name)
-                                    if vm.selectedNamespace == ns.name {
-                                        Image(systemName: "checkmark")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            } label: {
-                Image(systemName: "slider.horizontal.3")
-            }
+    private func controlPlaneButton(_ vm: ChatViewModel) -> some View {
+        NavigationLink {
+            ControlPlaneSettingsView(vm: vm)
+        } label: {
+            Image(systemName: "slider.horizontal.3")
         }
     }
 }

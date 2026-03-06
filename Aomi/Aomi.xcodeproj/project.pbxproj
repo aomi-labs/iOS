@@ -26,6 +26,7 @@
 		53310A991F5AFEB1C9D771C0 /* WalletViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E534253809626A251479F36 /* WalletViewModel.swift */; };
 		558B359D6329261BA4103A65 /* ENSResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = E698AC1DC554812893AA4DD9 /* ENSResolver.swift */; };
 		56B381E0D6B12544628F00C4 /* ChainConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10EFF7B1D0671E2AD19D6172 /* ChainConfig.swift */; };
+		57268A4F08E50F248019E91C /* ControlPlaneSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC90D8D5525794F630EF3E33 /* ControlPlaneSettingsView.swift */; };
 		5806880FBD8ECDDF21B38E3B /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDD15E2935A70E7EAB896AED /* WelcomeView.swift */; };
 		5D9FBF29B6058E2D96ACD6D9 /* EthereumRPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74124EAFE3C2739ECD9A10B3 /* EthereumRPC.swift */; };
 		657E9C59B2AF46D88F60D728 /* WalletRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6A91F32294508655F86B82 /* WalletRowView.swift */; };
@@ -118,6 +119,7 @@
 		AEAE4B5C2C6D971CCDFD4EAA /* Aomi.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Aomi.entitlements; sourceTree = "<group>"; };
 		AEE5CBFE7682DE1715FB2101 /* AddWatchAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddWatchAddressView.swift; sourceTree = "<group>"; };
 		B2E8A3F5DF86C3F8991BF249 /* ParaWalletService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParaWalletService.swift; sourceTree = "<group>"; };
+		BC90D8D5525794F630EF3E33 /* ControlPlaneSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlPlaneSettingsView.swift; sourceTree = "<group>"; };
 		C2CDC2872FA7C26EB8CC9FF3 /* ThinkingShimmerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThinkingShimmerView.swift; sourceTree = "<group>"; };
 		C85ABA8DEC945629E1587A07 /* AuthLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthLoginView.swift; sourceTree = "<group>"; };
 		D4E0BC969E55331CA181BC0E /* AuthVerifyOTPView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthVerifyOTPView.swift; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 				5D58D4AE77ED34DD5C9D692E /* ChatInputBar.swift */,
 				2EA95183686752E0757722CD /* ChatMessageView.swift */,
 				DBC5E12AD36D63E209377A34 /* ChatView.swift */,
+				BC90D8D5525794F630EF3E33 /* ControlPlaneSettingsView.swift */,
 				C2CDC2872FA7C26EB8CC9FF3 /* ThinkingShimmerView.swift */,
 				90E018890150D2C4E5DC4E24 /* ToolDetailSheet.swift */,
 				6913DEF8870F8F2362AB9820 /* ToolStepRow.swift */,
@@ -470,6 +473,7 @@
 				CAFC54ED8F196FA2D7D112A0 /* ChatMessageView.swift in Sources */,
 				EAFF2ED18EEF50E91A046491 /* ChatView.swift in Sources */,
 				392BD704ED742F7889B257A9 /* ChatViewModel.swift in Sources */,
+				57268A4F08E50F248019E91C /* ControlPlaneSettingsView.swift in Sources */,
 				217AEE1E61F0A7F48B0D8D35 /* DeFiPositionDetailSheet.swift in Sources */,
 				4C47ECF66E79F7F2FAC7FCFA /* DeFiPositionWidget.swift in Sources */,
 				558B359D6329261BA4103A65 /* ENSResolver.swift in Sources */,
@@ -675,7 +679,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Aomi/Aomi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Aomi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -696,7 +700,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Aomi/Aomi.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 11;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Aomi/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

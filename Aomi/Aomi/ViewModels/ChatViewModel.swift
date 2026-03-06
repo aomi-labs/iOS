@@ -19,6 +19,9 @@ final class ChatViewModel {
     var selectedNamespace: String? {
         didSet { UserDefaults.standard.set(selectedNamespace, forKey: "selectedNamespace") }
     }
+    var selectedNetwork: Int {
+        didSet { UserDefaults.standard.set(selectedNetwork, forKey: "selectedNetwork") }
+    }
     private var processedSystemEventIds: Set<String> = []
 
     let sessionId: String
@@ -39,6 +42,8 @@ final class ChatViewModel {
         }
         selectedModel = UserDefaults.standard.string(forKey: "selectedModel")
         selectedNamespace = UserDefaults.standard.string(forKey: "selectedNamespace")
+        let storedNetwork = UserDefaults.standard.integer(forKey: "selectedNetwork")
+        selectedNetwork = storedNetwork != 0 ? storedNetwork : 1
         observeTransactionCompletions()
     }
 
@@ -297,7 +302,7 @@ final class ChatViewModel {
     private func buildUserState() -> APIUserState {
         APIUserState(
             address: apiClient.publicKey,
-            chainId: 1,
+            chainId: UInt64(selectedNetwork),
             isConnected: walletService.isLoggedIn,
             ensName: apiClient.ensName
         )
