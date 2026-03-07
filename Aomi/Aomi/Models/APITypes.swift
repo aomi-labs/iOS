@@ -16,7 +16,7 @@ struct SessionResponse: Codable, Sendable {
     }
 }
 
-struct APIMessage: Codable, Sendable {
+struct APIMessage: Codable, Sendable, Equatable {
     let sender: MessageSender
     let content: String
     let toolResult: ToolResultTuple?
@@ -36,7 +36,7 @@ struct APIMessage: Codable, Sendable {
     }
 }
 
-struct ToolResultTuple: Codable, Sendable {
+struct ToolResultTuple: Codable, Sendable, Equatable {
     let topic: String
     let content: String
 

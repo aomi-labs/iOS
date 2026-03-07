@@ -3,13 +3,18 @@ import SwiftUI
 struct ChatMessageView: View {
     let message: ChatMessage
     var isStreaming: Bool = false
+    var onAssistantTextVisible: ((UUID, String) -> Void)?
 
     var body: some View {
         switch message.role {
         case .user:
             UserBubbleView(message: message)
         case .assistant:
-            AssistantMessageView(message: message, isStreaming: isStreaming)
+            AssistantMessageView(
+                message: message,
+                isStreaming: isStreaming,
+                onTextVisible: onAssistantTextVisible
+            )
         case .system:
             systemMessage
         }

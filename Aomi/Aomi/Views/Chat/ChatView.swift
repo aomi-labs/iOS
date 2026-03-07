@@ -57,27 +57,20 @@ struct ChatView: View {
 
     @ViewBuilder
     private func chatContent(_ vm: ChatViewModel) -> some View {
-        @Bindable var viewModel = vm
+        transcriptView(vm)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            inputBar(vm)
+        }
+        .onChange(of: vm.inputText) {
+            vm.saveDraft(modelContext: modelContext)
+        }
+    }
+
+    private func transcriptView(_ vm: ChatViewModel) -> some View {
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(spacing: 12) {
-                    ForEach(vm.messages) { message in
-                        ChatMessageView(
-                            message: message,
-                            isStreaming: vm.isStreaming && message.id == vm.currentAssistantMessageId,
-                            onAssistantTextVisible: vm.markAssistantTextVisible
-                        )
-                        .id(message.id)
-                    }
-                    if vm.isStreaming {
-                        ThinkingShimmerView(label: vm.activeToolLabel ?? "Thinking...")
-                            .transition(
-                                .asymmetric(
-                                    insertion: .scale(scale: 0.9).combined(with: .opacity),
-                                    removal: .scale(scale: 0.95).combined(with: .opacity)
-                                )
-                            )
-                    }
+                    messageRows(vm)
                     Color.clear.frame(height: 1).id("bottom")
                 }
                 .padding()
@@ -89,23 +82,50 @@ struct ChatView: View {
                 scrollToBottom(proxy)
             }
         }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            ChatInputBar(
-                text: $viewModel.inputText,
-                isStreaming: vm.isStreaming,
-                onSend: {
-                    isInputFocused = false
-                    vm.sendMessage()
-                },
-                onInterrupt: {
-                    vm.interrupt()
-                },
-                isFocused: $isInputFocused
+    }
+
+    @ViewBuilder
+    private func messageRows(_ vm: ChatViewModel) -> some View {
+        ForEach(vm.messages) { message in
+            ChatMessageView(
+                message: message,
+                isStreaming: vm.isStreaming && message.id == vm.currentAssistantMessageId,
+                onAssistantTextVisible: vm.markAssistantTextVisible
             )
+            .id(message.id)
         }
-        .onChange(of: vm.inputText) {
-            vm.saveDraft(modelContext: modelContext)
+
+        if vm.isStreaming {
+            ThinkingShimmerView(label: vm.activeToolLabel ?? "Thinking...")
+                .transition(
+                    .asymmetric(
+                        insertion: .scale(scale: 0.9).combined(with: .opacity),
+                        removal: .scale(scale: 0.95).combined(with: .opacity)
+                    )
+                )
         }
+    }
+
+    private func inputBar(_ vm: ChatViewModel) -> some View {
+        ChatInputBar(
+            text: inputBinding(for: vm),
+            isStreaming: vm.isStreaming,
+            onSend: {
+                isInputFocused = false
+                vm.sendMessage()
+            },
+            onInterrupt: {
+                vm.interrupt()
+            },
+            isFocused: $isInputFocused
+        )
+    }
+
+    private func inputBinding(for vm: ChatViewModel) -> Binding<String> {
+        Binding(
+            get: { vm.inputText },
+            set: { vm.inputText = $0 }
+        )
     }
 
     @ViewBuilder

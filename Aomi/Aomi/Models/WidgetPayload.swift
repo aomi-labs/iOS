@@ -1,6 +1,10 @@
 import Foundation
 
-struct WidgetPayload: Codable, Identifiable, Sendable {
+struct WidgetPayload: Codable, Identifiable, Sendable, Equatable {
+    static func == (lhs: WidgetPayload, rhs: WidgetPayload) -> Bool {
+        lhs.widgetType == rhs.widgetType && lhs.data == rhs.data
+    }
+
     let id: String
     let widgetType: String
     let data: JSONValue
