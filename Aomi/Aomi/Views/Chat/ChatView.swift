@@ -25,7 +25,14 @@ struct ChatView: View {
                 }
             }
         }
-        .task {
+        .task(id: sessionId) {
+            if let viewModel, viewModel.sessionId == sessionId {
+                viewModel.connectSSE()
+                await viewModel.loadControlPlaneOptions()
+                return
+            }
+
+            viewModel?.tearDown()
             let vm = ChatViewModel(
                 sessionId: sessionId,
                 apiClient: apiClient,
@@ -34,7 +41,12 @@ struct ChatView: View {
             viewModel = vm
             vm.loadDraft(modelContext: modelContext)
             await vm.loadHistory()
+            vm.connectSSE()
             await vm.loadControlPlaneOptions()
+        }
+        .onDisappear {
+            viewModel?.flushDraftSave(modelContext: modelContext)
+            viewModel?.tearDown()
         }
         .onChange(of: viewModel?.generatedTitle) { _, newTitle in
             if let newTitle {
@@ -52,7 +64,8 @@ struct ChatView: View {
                     ForEach(vm.messages) { message in
                         ChatMessageView(
                             message: message,
-                            isStreaming: vm.isStreaming && message.id == vm.currentAssistantMessageId
+                            isStreaming: vm.isStreaming && message.id == vm.currentAssistantMessageId,
+                            onAssistantTextVisible: vm.markAssistantTextVisible
                         )
                         .id(message.id)
                     }
@@ -72,10 +85,8 @@ struct ChatView: View {
             }
             .defaultScrollAnchor(.bottom)
             .scrollDismissesKeyboard(.interactively)
-            .onChange(of: vm.messages.count) {
-                withAnimation(.spring(duration: 0.3)) {
-                    proxy.scrollTo("bottom")
-                }
+            .onChange(of: scrollState(for: vm)) { _, _ in
+                scrollToBottom(proxy)
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
@@ -105,4 +116,27 @@ struct ChatView: View {
             Image(systemName: "slider.horizontal.3")
         }
     }
+
+    private func scrollToBottom(_ proxy: ScrollViewProxy) {
+        withAnimation(.spring(duration: 0.3)) {
+            proxy.scrollTo("bottom")
+        }
+    }
+
+    private func scrollState(for vm: ChatViewModel) -> ScrollState {
+        let lastMessage = vm.messages.last
+        return ScrollState(
+            lastMessageID: lastMessage?.id,
+            lastMessageLength: lastMessage?.textContent.count ?? 0,
+            isStreaming: vm.isStreaming,
+            toolLabel: vm.activeToolLabel
+        )
+    }
+}
+
+private struct ScrollState: Equatable {
+    let lastMessageID: UUID?
+    let lastMessageLength: Int
+    let isStreaming: Bool
+    let toolLabel: String?
 }

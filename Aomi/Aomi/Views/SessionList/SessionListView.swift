@@ -88,19 +88,21 @@ struct SessionListView: View {
             }
         }
         .task {
+            guard viewModel == nil else { return }
             let vm = SessionListViewModel(apiClient: apiClient)
             viewModel = vm
             await vm.loadSessions()
-            await resolveENS()
+            await resolveENS(for: apiClient.publicKey)
         }
         .onChange(of: apiClient.publicKey) {
+            let currentAddress = apiClient.publicKey
             ensName = nil
             apiClient.ensName = nil
             Task {
-                if apiClient.publicKey != nil {
+                if currentAddress != nil {
                     await viewModel?.loadSessions()
                 }
-                await resolveENS()
+                await resolveENS(for: currentAddress)
             }
         }
     }
@@ -116,12 +118,13 @@ struct SessionListView: View {
         } else {
             List {
                 ForEach(viewModel.sessions) { session in
-                    SessionRowView(session: session)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            HapticEngine.lightTap()
-                            selectedSessionId = session.id
+                    NavigationLink {
+                        ChatView(sessionId: session.id) { title in
+                            viewModel.updateSessionTitle(id: session.id, title: title)
                         }
+                    } label: {
+                        SessionRowView(session: session)
+                    }
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) {
                                 Task { await viewModel.deleteSession(id: session.id) }
@@ -140,12 +143,13 @@ struct SessionListView: View {
                 if !viewModel.archivedSessions.isEmpty {
                     Section("Archived") {
                         ForEach(viewModel.archivedSessions) { session in
-                            SessionRowView(session: session)
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    HapticEngine.lightTap()
-                                    selectedSessionId = session.id
+                            NavigationLink {
+                                ChatView(sessionId: session.id) { title in
+                                    viewModel.updateSessionTitle(id: session.id, title: title)
                                 }
+                            } label: {
+                                SessionRowView(session: session)
+                            }
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                     Button(role: .destructive) {
                                         Task { await viewModel.deleteSession(id: session.id) }
@@ -174,10 +178,11 @@ struct SessionListView: View {
         return "\(address.prefix(6))...\(address.suffix(4))"
     }
 
-    private func resolveENS() async {
-        guard let address = apiClient.publicKey, address.hasPrefix("0x") else { return }
+    private func resolveENS(for address: String?) async {
+        guard let address, address.hasPrefix("0x") else { return }
         do {
             let name = try await ENSResolver.shared.reverseLookup(address)
+            guard apiClient.publicKey == address else { return }
             ensName = name
             apiClient.ensName = name
         } catch {

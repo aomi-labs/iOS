@@ -3,7 +3,7 @@ import SwiftUI
 
 struct PortfolioOverviewWidget: View {
     let data: JSONValue
-    @State private var selectedToken: String?
+    @State private var selectedToken: TokenRow?
     @State private var hasAppeared = false
 
     var body: some View {
@@ -18,10 +18,10 @@ struct PortfolioOverviewWidget: View {
             }
 
             // Token list
-            ForEach(tokens, id: \.symbol) { token in
+            ForEach(tokens) { token in
                 Button {
                     HapticEngine.lightTap()
-                    selectedToken = token.symbol
+                    selectedToken = token
                 } label: {
                     HStack(spacing: 10) {
                         Circle().fill(Color(.systemGray4))
@@ -68,11 +68,9 @@ struct PortfolioOverviewWidget: View {
                 hasAppeared = true
             }
         }
-        .sheet(item: $selectedToken) { symbol in
-            if let token = tokens.first(where: { $0.symbol == symbol }) {
-                PriceChartDetailSheet(tokenSymbol: token.symbol, sparkline: token.sparkline)
-                    .onAppear { HapticEngine.sheetPresented() }
-            }
+        .sheet(item: $selectedToken) { token in
+            PriceChartDetailSheet(tokenSymbol: token.symbol, sparkline: token.sparkline)
+                .onAppear { HapticEngine.sheetPresented() }
         }
     }
 
@@ -82,25 +80,41 @@ struct PortfolioOverviewWidget: View {
 
     private var tokens: [TokenRow] {
         guard case .array(let items) = data["tokens"] else { return [] }
-        return items.compactMap { item in
+        return items.enumerated().compactMap { index, item in
             guard let symbol = item["symbol"]?.stringValue,
                   let name = item["name"]?.stringValue,
                   let balance = item["balance"]?.stringValue,
                   let usdValue = item["usd_value"]?.stringValue else { return nil }
             let sparkline: [Double] = (item["sparkline"]?.arrayValue ?? []).compactMap(\.numberValue)
-            return TokenRow(symbol: symbol, name: name, balance: balance, usdValue: usdValue, sparkline: sparkline)
+            let stableID = [
+                item["id"]?.stringValue,
+                item["contract_address"]?.stringValue,
+                item["address"]?.stringValue,
+                item["symbol"]?.stringValue,
+                item["name"]?.stringValue,
+                item["chain"]?.stringValue,
+                item["network"]?.stringValue,
+            ]
+            .compactMap { $0 }
+            .joined(separator: "|")
+
+            return TokenRow(
+                id: stableID.isEmpty ? "\(symbol)|\(name)|\(index)" : stableID,
+                symbol: symbol,
+                name: name,
+                balance: balance,
+                usdValue: usdValue,
+                sparkline: sparkline
+            )
         }
     }
 }
 
-private struct TokenRow {
+private struct TokenRow: Identifiable {
+    let id: String
     let symbol: String
     let name: String
     let balance: String
     let usdValue: String
     let sparkline: [Double]
-}
-
-extension String: @retroactive Identifiable {
-    public var id: String { self }
 }

@@ -5,6 +5,7 @@ struct WalletRowView: View {
     let chain: String
     let label: String?
     let badge: String
+    var showsInlineCopy: Bool = true
     @State private var showCopied = false
 
     var body: some View {
@@ -18,21 +19,18 @@ struct WalletRowView: View {
                     Text(truncatedAddress)
                         .font(.system(.caption, design: .monospaced))
                         .foregroundStyle(.secondary)
-                    Button {
-                        UIPasteboard.general.string = address
-                        HapticEngine.lightTap()
-                        showCopied = true
-                        Task {
-                            try? await Task.sleep(for: .seconds(1.5))
-                            showCopied = false
+
+                    if showsInlineCopy {
+                        Button {
+                            copyAddress()
+                        } label: {
+                            Image(systemName: showCopied ? "checkmark" : "doc.on.doc")
+                                .font(.caption2)
+                                .foregroundStyle(showCopied ? .green : .secondary)
                         }
-                    } label: {
-                        Image(systemName: showCopied ? "checkmark" : "doc.on.doc")
-                            .font(.caption2)
-                            .foregroundStyle(showCopied ? .green : .secondary)
+                        .buttonStyle(.plain)
+                        .animation(.easeInOut(duration: 0.2), value: showCopied)
                     }
-                    .buttonStyle(.plain)
-                    .animation(.easeInOut(duration: 0.2), value: showCopied)
                 }
             }
             Spacer()
@@ -56,8 +54,7 @@ struct WalletRowView: View {
         .padding(.vertical, 2)
         .contextMenu {
             Button("Copy Address", systemImage: "doc.on.doc") {
-                HapticEngine.lightTap()
-                UIPasteboard.general.string = address
+                copyAddress()
             }
         }
     }
@@ -65,5 +62,15 @@ struct WalletRowView: View {
     private var truncatedAddress: String {
         guard address.count > 14 else { return address }
         return "\(address.prefix(8))...\(address.suffix(6))"
+    }
+
+    private func copyAddress() {
+        UIPasteboard.general.string = address
+        HapticEngine.lightTap()
+        showCopied = true
+        Task {
+            try? await Task.sleep(for: .seconds(1.5))
+            showCopied = false
+        }
     }
 }

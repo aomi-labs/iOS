@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import SwiftData
 
 @Observable
@@ -28,9 +29,22 @@ final class ChatViewModel {
     private let apiClient: AomiAPIClient
     private let walletService: ParaWalletService
     private var pollTask: Task<Void, Never>?
-    private var lastMessageCount = 0
+    private var sseTask: Task<Void, Never>?
+    private var sseWatchdogTask: Task<Void, Never>?
+    private var apiMessageCount = 0
+    private var renderedAPIMessages: [APIMessage] = []
+    private var activeLatencyTrace: ChatLatencyTrace?
+    private var lastStreamingUpdateSource: String?
+    private var lastStreamingUpdateAt: TimeInterval?
     private var hasGeneratedTitle = false
+    private var draftSession: PersistedChatSession?
+    private var draftSaveTask: Task<Void, Never>?
     private let titleGenerator = SessionTitleGenerator()
+
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "io.aomi.Aomi",
+        category: "ChatLatency"
+    )
 
     init(sessionId: String, apiClient: AomiAPIClient, walletService: ParaWalletService) {
         self.sessionId = sessionId
@@ -52,36 +66,123 @@ final class ChatViewModel {
         guard !text.isEmpty else { return }
         inputText = ""
 
-        // Add user message
+        // Add user message at the API boundary so processResponse updates in-place
         let userMsg = ChatMessage(role: .user, content: [.text(text)])
-        messages.append(userMsg)
+        messages.insert(userMsg, at: apiMessageCount)
+        apiMessageCount += 1
 
         // Start processing
         isStreaming = true
         activeToolLabel = "Thinking..."
+        startLatencyTrace(prompt: text)
 
+        // SSE is already listening -- just fire the POST.
+        // The persistent SSE will handle streaming updates and clear isStreaming.
         pollTask?.cancel()
         pollTask = Task {
             do {
-                // Send message and get initial response
                 let userState = buildUserState()
                 let response = try await apiClient.sendMessage(text, namespace: selectedNamespace, userState: userState)
-                processResponse(response)
+                processResponse(response, source: "post")
 
-                // Stream or poll while processing
-                if response.isProcessing {
-                    await streamOrPoll(userState: userState)
+                if !response.isProcessing {
+                    // Quick response, no streaming needed
+                    isStreaming = false
+                    activeToolLabel = nil
+                    finishLatencyTrace(reason: "completed_post")
+                    await generateTitleIfNeeded()
+                } else if !apiClient.isSSEReadyForStreaming {
+                    // The SSE task exists, but the stream has not delivered a
+                    // usable session response yet. Poll immediately instead of
+                    // waiting on a connection that may still be handshaking.
+                    await pollUntilDone(userState: userState)
+                    isStreaming = false
+                    activeToolLabel = nil
+                    finishLatencyTrace(reason: "completed_poll_until_sse_ready")
+                    await generateTitleIfNeeded()
+                } else {
+                    scheduleSSEWatchdog(userState: userState)
                 }
-                // Generate title after first complete response
-                await generateTitleIfNeeded()
+                // Otherwise SSE is connected and will handle the rest
             } catch {
                 if !Task.isCancelled {
                     let errorMsg = ChatMessage(role: .system, content: [.error(error.localizedDescription)])
                     messages.append(errorMsg)
                 }
+                isStreaming = false
+                activeToolLabel = nil
+                cancelSSEWatchdog()
+                finishLatencyTrace(reason: "error")
             }
-            isStreaming = false
-            activeToolLabel = nil
+        }
+    }
+
+    /// Start a persistent SSE connection for this session. Call once after loading history.
+    func connectSSE() {
+        guard sseTask == nil else { return }
+        observeTransactionCompletions()
+        let userState = buildUserState()
+        sseTask = Task {
+            while !Task.isCancelled {
+                do {
+                    for try await response in apiClient.streamUpdates(userState: userState) {
+                        if Task.isCancelled { return }
+                        processResponse(response, source: "sse")
+                        if !response.isProcessing && isStreaming {
+                            isStreaming = false
+                            activeToolLabel = nil
+                            cancelSSEWatchdog()
+                            finishLatencyTrace(reason: "completed_sse")
+                            await generateTitleIfNeeded()
+                        }
+                    }
+                    // Stream ended normally (server closed it).
+                    // If we were mid-stream, fall back to polling to finish.
+                    if Task.isCancelled { return }
+                    if isStreaming {
+                        await pollUntilDone(userState: userState)
+                        isStreaming = false
+                        activeToolLabel = nil
+                        cancelSSEWatchdog()
+                        finishLatencyTrace(reason: "completed_poll_after_sse_end")
+                        await generateTitleIfNeeded()
+                    }
+                    // Reconnect after brief delay
+                    try await Task.sleep(for: .milliseconds(500))
+                } catch {
+                    if Task.isCancelled { return }
+                    // SSE error -- if mid-stream, fall back to polling
+                    if isStreaming {
+                        await pollUntilDone(userState: userState)
+                        isStreaming = false
+                        activeToolLabel = nil
+                        cancelSSEWatchdog()
+                        finishLatencyTrace(reason: "completed_poll_after_sse_error")
+                        await generateTitleIfNeeded()
+                    }
+                    // Reconnect with backoff
+                    try? await Task.sleep(for: .seconds(2))
+                }
+            }
+        }
+    }
+
+    /// Disconnect the persistent SSE connection.
+    func disconnectSSE() {
+        pollTask?.cancel()
+        pollTask = nil
+        sseTask?.cancel()
+        sseTask = nil
+        cancelSSEWatchdog()
+    }
+
+    func tearDown() {
+        disconnectSSE()
+        draftSaveTask?.cancel()
+        draftSaveTask = nil
+        if let txNotificationObserver {
+            NotificationCenter.default.removeObserver(txNotificationObserver)
+            self.txNotificationObserver = nil
         }
     }
 
@@ -91,13 +192,20 @@ final class ChatViewModel {
             try? await apiClient.interrupt()
             isStreaming = false
             activeToolLabel = nil
+            cancelSSEWatchdog()
+            finishLatencyTrace(reason: "interrupt")
         }
     }
 
     func loadHistory() async {
         do {
+            // Reset tracking for fresh history load
+            apiMessageCount = 0
+            renderedAPIMessages.removeAll()
+            messages.removeAll()
+            cancelSSEWatchdog()
             let response = try await apiClient.getState()
-            processResponse(response)
+            processResponse(response, source: "history")
         } catch {
             // No history available
         }
@@ -144,49 +252,60 @@ final class ChatViewModel {
 
     // MARK: - Response Processing
 
-    private func processResponse(_ response: SessionResponse) {
-        // Convert API messages to ChatMessages, replacing entire list
-        // (aomi backend returns full message history each time)
-        var newMessages: [ChatMessage] = []
-        for apiMsg in response.messages {
+    private func processResponse(_ response: SessionResponse, source: String) {
+        let startedAt = Self.now
+        markFirstUpdateIfNeeded(source: source, response: response)
+        if response.isProcessing {
+            lastStreamingUpdateSource = source
+            lastStreamingUpdateAt = startedAt
+        }
+
+        let apiMessages = response.messages
+
+        if apiMessages.count < apiMessageCount {
+            messages.removeSubrange(apiMessages.count..<apiMessageCount)
+            apiMessageCount = apiMessages.count
+        }
+
+        for (i, apiMsg) in apiMessages.enumerated() {
+            if i < renderedAPIMessages.count, renderedAPIMessages[i] == apiMsg {
+                continue
+            }
+
             let role: ChatRole = switch apiMsg.sender {
             case .user: .user
             case .agent: .assistant
             case .system: .system
             }
-            var content: [ChatContent] = []
+            let newContent = buildContent(from: apiMsg)
 
-            // Check if tool_result contains a widget
-            if let toolResult = apiMsg.toolResult {
-                if let widget = parseWidget(topic: toolResult.topic, content: toolResult.content) {
-                    content.append(.widget(widget))
-                } else if !toolResult.content.isEmpty {
-                    content.append(.text(toolResult.content))
+            if i < apiMessageCount {
+                // Update existing message in-place if content changed
+                if messages[i].content != newContent {
+                    messages[i].content = newContent
                 }
+            } else {
+                // Insert new API message before any locally-injected messages
+                let msg = ChatMessage(role: role, content: newContent)
+                messages.insert(msg, at: apiMessageCount)
+                apiMessageCount += 1
             }
-
-            if !apiMsg.content.isEmpty && content.isEmpty {
-                content.append(.text(apiMsg.content))
-            }
-
-            newMessages.append(ChatMessage(role: role, content: content))
         }
 
-        // Update if message count OR last message content changed (for streaming)
-        let lastMsgContent = messages.last?.textContent ?? ""
-        let newLastMsgContent = newMessages.last?.textContent ?? ""
+        renderedAPIMessages = apiMessages
 
-        if newMessages.count != lastMessageCount || lastMsgContent != newLastMsgContent {
-            messages = newMessages
-            lastMessageCount = newMessages.count
-            if let last = newMessages.last, last.role == .assistant {
-                currentAssistantMessageId = last.id
-            }
+        // Update assistant streaming indicator
+        if let last = apiMessages.last, last.sender == .agent, apiMessageCount > 0 {
+            currentAssistantMessageId = messages[apiMessageCount - 1].id
+        } else if !response.isProcessing {
+            currentAssistantMessageId = nil
         }
 
         // Update streaming label
         if response.isProcessing {
             activeToolLabel = "Processing..."
+        } else {
+            cancelSSEWatchdog()
         }
 
         // Update pending transactions from user state, including clearing when empty.
@@ -194,6 +313,32 @@ final class ChatViewModel {
 
         // Process system events for wallet tx requests
         processSystemEvents(response.systemEvents)
+
+        logLatestAgentMessage(source: source, messages: apiMessages, isProcessing: response.isProcessing)
+        logProcessResponseDuration(
+            source: source,
+            startedAt: startedAt,
+            messageCount: apiMessages.count,
+            isProcessing: response.isProcessing
+        )
+    }
+
+    private func buildContent(from apiMsg: APIMessage) -> [ChatContent] {
+        var content: [ChatContent] = []
+
+        if let toolResult = apiMsg.toolResult {
+            if let widget = parseWidget(topic: toolResult.topic, content: toolResult.content) {
+                content.append(.widget(widget))
+            } else if !toolResult.content.isEmpty {
+                content.append(.text(toolResult.content))
+            }
+        }
+
+        if !apiMsg.content.isEmpty && content.isEmpty {
+            content.append(.text(apiMsg.content))
+        }
+
+        return content
     }
 
     private func processSystemEvents(_ events: [JSONValue]) {
@@ -313,6 +458,7 @@ final class ChatViewModel {
     private var txNotificationObserver: Any?
 
     func observeTransactionCompletions() {
+        guard txNotificationObserver == nil else { return }
         txNotificationObserver = NotificationCenter.default.addObserver(
             forName: .transactionCompleted,
             object: nil,
@@ -324,27 +470,12 @@ final class ChatViewModel {
         }
     }
 
-    private func streamOrPoll(userState: APIUserState) async {
-        // Try SSE first, fall back to polling on error
-        do {
-            for try await response in apiClient.streamUpdates(userState: userState) {
-                if Task.isCancelled { return }
-                processResponse(response)
-                if !response.isProcessing { return }
-            }
-        } catch {
-            // SSE failed, fall back to polling
-            if Task.isCancelled { return }
-            await pollUntilDone(userState: userState)
-        }
-    }
-
     private func pollUntilDone(userState: APIUserState) async {
         do {
             while !Task.isCancelled {
                 try await Task.sleep(for: .milliseconds(500))
                 let state = try await apiClient.getState(userState: userState)
-                processResponse(state)
+                processResponse(state, source: "poll")
                 if !state.isProcessing { break }
             }
         } catch {
@@ -359,35 +490,215 @@ final class ChatViewModel {
         guard !isStreaming else { return }
         isStreaming = true
         activeToolLabel = "Processing..."
-        pollTask?.cancel()
-        pollTask = Task {
-            let userState = buildUserState()
-            try? await Task.sleep(for: .milliseconds(500))
-            await streamOrPoll(userState: userState)
-            isStreaming = false
-            activeToolLabel = nil
+        // Only trust SSE once it has delivered at least one decodable
+        // session update on the current connection.
+        if !apiClient.isSSEReadyForStreaming {
+            pollTask?.cancel()
+            pollTask = Task {
+                let userState = buildUserState()
+                try? await Task.sleep(for: .milliseconds(500))
+                await pollUntilDone(userState: userState)
+                isStreaming = false
+                activeToolLabel = nil
+            }
+        } else {
+            scheduleSSEWatchdog(userState: buildUserState())
         }
     }
 
     // MARK: - Persistence
 
     func saveDraft(modelContext: ModelContext) {
-        let sid = sessionId
-        let descriptor = FetchDescriptor<PersistedChatSession>(
-            predicate: #Predicate { $0.sessionId == sid }
-        )
-        if let session = try? modelContext.fetch(descriptor).first {
-            session.draftInputText = inputText
+        draftSaveTask?.cancel()
+        let latestInput = inputText
+        draftSaveTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            try? await Task.sleep(for: .milliseconds(300))
+            guard !Task.isCancelled else { return }
+            persistDraft(latestInput, modelContext: modelContext)
         }
     }
 
+    func flushDraftSave(modelContext: ModelContext) {
+        draftSaveTask?.cancel()
+        persistDraft(inputText, modelContext: modelContext)
+    }
+
     func loadDraft(modelContext: ModelContext) {
+        let session = fetchOrCreateDraftSession(modelContext: modelContext)
+        inputText = session.draftInputText ?? ""
+    }
+
+    func markAssistantTextVisible(messageId: UUID, text: String) {
+        guard let currentAssistantMessageId,
+              currentAssistantMessageId == messageId,
+              !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              var trace = activeLatencyTrace,
+              !trace.didLogFirstVisibleText else {
+            return
+        }
+
+        trace.didLogFirstVisibleText = true
+        activeLatencyTrace = trace
+
+        let elapsedMs = Self.elapsedMilliseconds(since: trace.startedAt)
+        Self.logger.log(
+            "[chat-latency] first_visible_text trace=\(trace.id, privacy: .public) session=\(self.sessionId, privacy: .public) elapsed_ms=\(elapsedMs, format: .fixed(precision: 1)) message_id=\(messageId.uuidString, privacy: .public) chars=\(text.count)"
+        )
+    }
+
+    private func startLatencyTrace(prompt: String) {
+        cancelSSEWatchdog()
+        let trace = ChatLatencyTrace(
+            id: UUID().uuidString,
+            startedAt: Self.now,
+            promptLength: prompt.count
+        )
+        activeLatencyTrace = trace
+        lastStreamingUpdateSource = nil
+        lastStreamingUpdateAt = nil
+        Self.logger.log(
+            "[chat-latency] request_start trace=\(trace.id, privacy: .public) session=\(self.sessionId, privacy: .public) prompt_chars=\(trace.promptLength)"
+        )
+    }
+
+    private func markFirstUpdateIfNeeded(source: String, response: SessionResponse) {
+        guard var trace = activeLatencyTrace, !trace.didLogFirstUpdate else { return }
+        trace.didLogFirstUpdate = true
+        activeLatencyTrace = trace
+
+        let elapsedMs = Self.elapsedMilliseconds(since: trace.startedAt)
+        Self.logger.log(
+            "[chat-latency] first_update trace=\(trace.id, privacy: .public) session=\(self.sessionId, privacy: .public) source=\(source, privacy: .public) elapsed_ms=\(elapsedMs, format: .fixed(precision: 1)) messages=\(response.messages.count) processing=\(response.isProcessing)"
+        )
+    }
+
+    private func logProcessResponseDuration(source: String, startedAt: TimeInterval, messageCount: Int, isProcessing: Bool) {
+        guard let trace = activeLatencyTrace else { return }
+        let durationMs = Self.elapsedMilliseconds(since: startedAt)
+        Self.logger.log(
+            "[chat-latency] process_response trace=\(trace.id, privacy: .public) session=\(self.sessionId, privacy: .public) source=\(source, privacy: .public) duration_ms=\(durationMs, format: .fixed(precision: 1)) messages=\(messageCount) processing=\(isProcessing)"
+        )
+    }
+
+    private func logLatestAgentMessage(source: String, messages: [APIMessage], isProcessing: Bool) {
+        guard let trace = activeLatencyTrace else { return }
+
+        guard let lastAgent = messages.last(where: { $0.sender == .agent }) else {
+            Self.logger.log(
+                "[chat-latency] latest_agent trace=\(trace.id, privacy: .public) session=\(self.sessionId, privacy: .public) source=\(source, privacy: .public) processing=\(isProcessing) present=false"
+            )
+            return
+        }
+
+        let trimmedContent = lastAgent.content.trimmingCharacters(in: .whitespacesAndNewlines)
+        let toolTopic = lastAgent.toolResult?.topic ?? "none"
+        let toolChars = lastAgent.toolResult?.content.count ?? 0
+
+        Self.logger.log(
+            "[chat-latency] latest_agent trace=\(trace.id, privacy: .public) session=\(self.sessionId, privacy: .public) source=\(source, privacy: .public) processing=\(isProcessing) present=true content_chars=\(trimmedContent.count) streaming=\(lastAgent.isStreaming) tool_topic=\(toolTopic, privacy: .public) tool_chars=\(toolChars)"
+        )
+    }
+
+    private func finishLatencyTrace(reason: String) {
+        guard let trace = activeLatencyTrace else { return }
+        let totalMs = Self.elapsedMilliseconds(since: trace.startedAt)
+        Self.logger.log(
+            "[chat-latency] request_end trace=\(trace.id, privacy: .public) session=\(self.sessionId, privacy: .public) reason=\(reason, privacy: .public) total_ms=\(totalMs, format: .fixed(precision: 1)) first_update_logged=\(trace.didLogFirstUpdate) first_visible_logged=\(trace.didLogFirstVisibleText)"
+        )
+        activeLatencyTrace = nil
+        cancelSSEWatchdog()
+    }
+
+    private func scheduleSSEWatchdog(userState: APIUserState) {
+        sseWatchdogTask?.cancel()
+        let baselineUpdateAt = lastStreamingUpdateAt
+        let baselineSource = lastStreamingUpdateSource
+
+        sseWatchdogTask = Task { [weak self] in
+            try? await Task.sleep(for: .milliseconds(1500))
+            guard let self else { return }
+            guard !Task.isCancelled,
+                  self.isStreaming,
+                  self.sseTask != nil,
+                  self.lastStreamingUpdateAt == baselineUpdateAt,
+                  self.lastStreamingUpdateSource == baselineSource else {
+                return
+            }
+
+            Self.logger.log(
+                "[chat-latency] sse_watchdog_fallback session=\(self.sessionId, privacy: .public) baseline_source=\(baselineSource ?? "none", privacy: .public)"
+            )
+
+            do {
+                let state = try await self.apiClient.getState(userState: userState)
+                self.processResponse(state, source: "watchdog_poll")
+
+                if state.isProcessing {
+                    await self.pollUntilDone(userState: userState)
+                }
+
+                if self.isStreaming {
+                    self.isStreaming = false
+                    self.activeToolLabel = nil
+                    self.finishLatencyTrace(reason: "completed_watchdog_poll")
+                    await self.generateTitleIfNeeded()
+                }
+            } catch {
+                Self.logger.log(
+                    "[chat-latency] sse_watchdog_error session=\(self.sessionId, privacy: .public) error=\(String(describing: error), privacy: .public)"
+                )
+            }
+        }
+    }
+
+    private func cancelSSEWatchdog() {
+        sseWatchdogTask?.cancel()
+        sseWatchdogTask = nil
+    }
+
+    private func persistDraft(_ text: String, modelContext: ModelContext) {
+        let session = fetchOrCreateDraftSession(modelContext: modelContext)
+        guard session.draftInputText != text else { return }
+        session.draftInputText = text
+        try? modelContext.save()
+    }
+
+    private func fetchOrCreateDraftSession(modelContext: ModelContext) -> PersistedChatSession {
+        if let draftSession {
+            return draftSession
+        }
+
         let sid = sessionId
         let descriptor = FetchDescriptor<PersistedChatSession>(
             predicate: #Predicate { $0.sessionId == sid }
         )
+
         if let session = try? modelContext.fetch(descriptor).first {
-            inputText = session.draftInputText ?? ""
+            draftSession = session
+            return session
         }
+
+        let session = PersistedChatSession(sessionId: sessionId, publicKey: apiClient.publicKey)
+        modelContext.insert(session)
+        draftSession = session
+        try? modelContext.save()
+        return session
     }
+
+    private static var now: TimeInterval {
+        ProcessInfo.processInfo.systemUptime
+    }
+
+    private static func elapsedMilliseconds(since start: TimeInterval) -> Double {
+        (now - start) * 1000
+    }
+}
+
+private struct ChatLatencyTrace {
+    let id: String
+    let startedAt: TimeInterval
+    let promptLength: Int
+    var didLogFirstUpdate = false
+    var didLogFirstVisibleText = false
 }

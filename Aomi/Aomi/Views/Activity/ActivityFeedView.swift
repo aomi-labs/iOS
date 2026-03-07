@@ -10,6 +10,18 @@ struct ActivityFeedView: View {
         Group {
             if isLoading && events.isEmpty {
                 ProgressView()
+            } else if let errorMessage, events.isEmpty {
+                ContentUnavailableView {
+                    Label("Unable to Load Activity", systemImage: "wifi.exclamationmark")
+                } description: {
+                    Text(errorMessage)
+                } actions: {
+                    Button("Retry") {
+                        Task {
+                            await loadEvents()
+                        }
+                    }
+                }
             } else if events.isEmpty {
                 ContentUnavailableView {
                     Label("No Activity", systemImage: "clock.arrow.circlepath")
@@ -50,6 +62,7 @@ struct ActivityFeedView: View {
 
     private func loadEvents() async {
         isLoading = true
+        errorMessage = nil
         defer { isLoading = false }
         do {
             events = try await apiClient.getEvents()

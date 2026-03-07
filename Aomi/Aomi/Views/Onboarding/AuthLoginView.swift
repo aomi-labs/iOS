@@ -10,7 +10,7 @@ struct AuthLoginView: View {
 
     @State private var authVM: AuthViewModel?
     @State private var selectedMode: Int = 0
-    @State private var emailInput = ""
+    @State private var emailInput = UserDefaults.standard.string(forKey: "lastLoginEmail") ?? ""
     @State private var phoneInput = ""
     @State private var selectedCountryCode = "+1"
     @State private var showOTP = false
@@ -135,7 +135,7 @@ struct AuthLoginView: View {
                     .padding(.bottom, 48)
                 }
             }
-            .navigationBarHidden(true)
+            .toolbarVisibility(.hidden, for: .navigationBar)
             .navigationDestination(isPresented: $showOTP) {
                 if let authVM {
                     AuthVerifyOTPView(
@@ -147,6 +147,7 @@ struct AuthLoginView: View {
             }
         }
         .task {
+            guard authVM == nil else { return }
             authVM = AuthViewModel(
                 walletService: walletService,
                 authorizationController: authorizationController,
@@ -188,9 +189,11 @@ struct AuthLoginView: View {
             await authVM.initiateLogin(input: input)
             if authVM.needsOTPVerification {
                 HapticEngine.success()
+                if selectedMode == 0 { UserDefaults.standard.set(emailInput, forKey: "lastLoginEmail") }
                 showOTP = true
             } else if authVM.errorMessage.isEmpty {
                 HapticEngine.success()
+                if selectedMode == 0 { UserDefaults.standard.set(emailInput, forKey: "lastLoginEmail") }
                 isLoggedIn = true
             } else {
                 HapticEngine.error()

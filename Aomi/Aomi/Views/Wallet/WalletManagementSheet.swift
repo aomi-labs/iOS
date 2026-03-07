@@ -1,5 +1,6 @@
 import SwiftUI
 import ParaSwift
+import UIKit
 
 struct WalletManagementSheet: View {
     @Environment(ParaWalletService.self) private var walletService
@@ -84,6 +85,7 @@ struct WalletManagementSheet: View {
             }
         }
         .task {
+            guard viewModel == nil else { return }
             let vm = WalletViewModel(walletService: walletService)
             viewModel = vm
             await vm.loadWallets()
@@ -167,7 +169,13 @@ struct WalletManagementSheet: View {
                             selectWallet(address: wallet.address)
                         } label: {
                             HStack {
-                                WalletRowView(address: wallet.address, chain: wallet.chain, label: nil, badge: "signing")
+                                WalletRowView(
+                                    address: wallet.address,
+                                    chain: wallet.chain,
+                                    label: nil,
+                                    badge: "signing",
+                                    showsInlineCopy: false
+                                )
                                 if apiClient.publicKey == wallet.address {
                                     Image(systemName: "checkmark.circle.fill")
                                         .foregroundStyle(.blue)
@@ -175,6 +183,11 @@ struct WalletManagementSheet: View {
                             }
                         }
                         .tint(.primary)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button("Copy", systemImage: "doc.on.doc") {
+                                copyWalletAddress(wallet.address)
+                            }
+                        }
                     }
                 }
             }
@@ -185,7 +198,13 @@ struct WalletManagementSheet: View {
                             selectWallet(address: entry.address)
                         } label: {
                             HStack {
-                                WalletRowView(address: entry.address, chain: entry.chain, label: entry.label, badge: "read-only")
+                                WalletRowView(
+                                    address: entry.address,
+                                    chain: entry.chain,
+                                    label: entry.label,
+                                    badge: "read-only",
+                                    showsInlineCopy: false
+                                )
                                 if apiClient.publicKey == entry.address {
                                     Image(systemName: "checkmark.circle.fill")
                                         .foregroundStyle(.blue)
@@ -193,6 +212,11 @@ struct WalletManagementSheet: View {
                             }
                         }
                         .tint(.primary)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button("Copy", systemImage: "doc.on.doc") {
+                                copyWalletAddress(entry.address)
+                            }
+                        }
                     }
                     .onDelete { indexSet in
                         for i in indexSet {
@@ -258,6 +282,11 @@ struct WalletManagementSheet: View {
         HapticEngine.walletSelected()
         apiClient.publicKey = address
         UserDefaults.standard.set(address, forKey: "activeWalletAddress")
+    }
+
+    private func copyWalletAddress(_ address: String) {
+        UIPasteboard.general.string = address
+        HapticEngine.lightTap()
     }
 
     private func truncateAddress(_ address: String) -> String {

@@ -13,7 +13,6 @@ struct AuthVerifyOTPView: View {
 
     // Resend timer
     @State private var resendCountdown: Int = 60
-    @State private var canResend = false
     @State private var timer: Timer?
 
     private let otpLength = 6
@@ -55,16 +54,28 @@ struct AuthVerifyOTPView: View {
                     }
 
                     // OTP digit boxes
-                    HStack(spacing: 8) {
-                        ForEach(0..<otpLength, id: \.self) { index in
-                            OTPDigitBox(
-                                digit: digit(at: index),
-                                isFocused: index == otpCode.count && isInputFocused
-                            )
-                            .onTapGesture {
-                                isInputFocused = true
+                    Button {
+                        isInputFocused = true
+                    } label: {
+                        HStack(spacing: 8) {
+                            ForEach(0..<otpLength, id: \.self) { index in
+                                OTPDigitBox(
+                                    digit: digit(at: index),
+                                    isFocused: index == otpCode.count && isInputFocused
+                                )
                             }
                         }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Verification code")
+                    .accessibilityValue(accessibilityCodeStatus)
+                    .accessibilityHint("Double-tap to edit the six-digit code")
+                    .accessibilityRepresentation {
+                        TextField("Verification code", text: $otpCode)
+                            .keyboardType(.numberPad)
+                            .textContentType(.oneTimeCode)
+                            .focused($isInputFocused)
                     }
 
                     // Error message
@@ -112,7 +123,10 @@ struct AuthVerifyOTPView: View {
                 .keyboardType(.numberPad)
                 .textContentType(.oneTimeCode)
                 .focused($isInputFocused)
-                .opacity(0)
+                .frame(width: 1, height: 1)
+                .opacity(0.01)
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
                 .onChange(of: otpCode) { oldValue, newValue in
                     // Limit to 6 digits, filter non-digits
                     let filtered = String(newValue.filter { $0.isNumber }.prefix(otpLength))
@@ -130,7 +144,7 @@ struct AuthVerifyOTPView: View {
                     }
                 }
         }
-        .navigationBarHidden(true)
+        .toolbarVisibility(.hidden, for: .navigationBar)
         .onAppear {
             isInputFocused = true
             startResendTimer()
@@ -167,17 +181,23 @@ struct AuthVerifyOTPView: View {
         }
     }
 
+    private var accessibilityCodeStatus: String {
+        if otpCode.isEmpty {
+            return "No digits entered"
+        }
+
+        return "\(otpCode.count) of \(otpLength) digits entered"
+    }
+
     // MARK: - Timer
 
     private func startResendTimer() {
         resendCountdown = 60
-        canResend = false
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             Task { @MainActor in
                 if resendCountdown > 0 {
                     resendCountdown -= 1
                 } else {
-                    canResend = true
                     timer?.invalidate()
                 }
             }
